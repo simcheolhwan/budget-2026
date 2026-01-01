@@ -43,27 +43,6 @@ export const useList = (listKey: ListKey, { year, month }: { year: number; month
   return sortList(list)
 }
 
-/* family */
-export const useFamily = () => {
-  const { family } = useDatabase()
-  return family
-}
-
-export const useFamilyBudget = () => {
-  const { budget } = useFamily()
-  return budget
-}
-
-export const useFamilyCategories = () => {
-  const { categories } = useFamily()
-  return categories
-}
-
-export const useFamilyExpenses = (year: number) => {
-  const { expenses } = useFamily()
-  return expenses[String(year)] || {}
-}
-
 /* ui */
 export const useUI = () => {
   const { ui } = useDatabase()

@@ -1,4 +1,4 @@
-import { equals, evolve, map, prop, sortBy, update } from "ramda"
+import { equals } from "ramda"
 import { DatabaseReference, get, ref, set } from "firebase/database"
 import { db } from "./config"
 import { thisMonth, thisYear } from "./data"
@@ -89,37 +89,5 @@ export class ListController {
     const prev = await this.get()
     const next = prev.filter((item) => !equals(item, target))
     await this.update(next)
-  }
-}
-
-export class FamilyExpensesController {
-  constructor(
-    private categoryName: string,
-    private year = thisYear,
-  ) {}
-
-  get ref() {
-    return ref(db, `/family/expenses/${this.year}/${this.categoryName}`)
-  }
-
-  async getExpenses() {
-    return (await val(this.ref)) ?? []
-  }
-
-  async setCategoryExpenses(list: FamilyExpenseItem[]) {
-    await set(this.ref, sortBy(prop("month"), map(evolve({ month: Number, amount: Number }), list)))
-  }
-
-  async setMonthExpense(month: number, expense: number) {
-    const prev: FamilyExpenseItem[] = await this.getExpenses()
-    const index = prev.findIndex((item) => item.month === month)
-
-    if (index === -1) {
-      await this.setCategoryExpenses([...prev, { month, amount: expense }])
-      return
-    }
-
-    const next = update(index, { ...prev[index], amount: expense }, prev)
-    await this.setCategoryExpenses(next)
   }
 }
