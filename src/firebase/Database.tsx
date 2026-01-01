@@ -1,11 +1,11 @@
 import { PropsWithChildren, useEffect } from "react"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { onValue, ref } from "firebase/database"
 import { db } from "./config"
 import { databaseState } from "./data"
 
 const Database = ({ children }: PropsWithChildren) => {
-  const [database, setDatabase] = useRecoilState(databaseState)
+  const [database, setDatabase] = useAtom(databaseState)
 
   useEffect(() => {
     onValue(ref(db), (snapshot) => setDatabase(snapshot.val()))

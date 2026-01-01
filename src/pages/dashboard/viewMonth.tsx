@@ -1,11 +1,11 @@
 import { useMemo } from "react"
-import { atom, useRecoilValue } from "recoil"
+import { atom, useAtomValue } from "jotai"
 import { thisMonth, thisYear } from "../../firebase/data"
 
-export const viewLastMonthState = atom({ key: "viewLastMonth", default: false })
+export const viewLastMonthState = atom(false)
 
 export const useViewYearMonth = () => {
-  const viewLastMonth = useRecoilValue(viewLastMonthState)
+  const viewLastMonth = useAtomValue(viewLastMonthState)
 
   const { year, month } = useMemo(() => {
     if (viewLastMonth) {

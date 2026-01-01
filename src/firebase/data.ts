@@ -1,13 +1,10 @@
-import { atom, useRecoilValue } from "recoil"
+import { atom, useAtomValue } from "jotai"
 
 /* database */
-export const databaseState = atom<Database | undefined>({
-  key: "database",
-  default: undefined,
-})
+export const databaseState = atom<Database | undefined>()
 
 export const useDatabase = () => {
-  const database = useRecoilValue(databaseState)
+  const database = useAtomValue(databaseState)
   if (!database) throw new Error("Database is not loaded")
   return database
 }

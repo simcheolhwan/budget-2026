@@ -1,6 +1,6 @@
 import { Button, Group, SegmentedControl } from "@mantine/core"
 import { modals } from "@mantine/modals"
-import { atom, useRecoilValue, useSetRecoilState } from "recoil"
+import { atom, useAtomValue, useSetAtom } from "jotai"
 import { thisYear } from "../../firebase/data"
 import { useAnnual } from "../../firebase/read"
 import EditList from "./EditList"
@@ -14,16 +14,13 @@ interface FilterState {
 type GroupKey = "" | "month" | "category"
 
 export const filterState = atom<FilterState>({
-  key: "filter",
-  default: {
-    year: String(thisYear),
-    listKey: "expense",
-    groupKey: "category",
-  },
+  year: String(thisYear),
+  listKey: "expense",
+  groupKey: "category",
 })
 
 export const useFilter = () => {
-  return useRecoilValue(filterState)
+  return useAtomValue(filterState)
 }
 
 export const useFilteredList = () => {
@@ -33,7 +30,7 @@ export const useFilteredList = () => {
 }
 
 export const useSetFilter = () => {
-  const setFilter = useSetRecoilState(filterState)
+  const setFilter = useSetAtom(filterState)
   return (filter: Partial<FilterState>) => setFilter((prev) => ({ ...prev, ...filter }))
 }
 
