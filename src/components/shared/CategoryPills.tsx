@@ -24,6 +24,7 @@ export function CategoryPills({ value, onChange, categories }: CategoryPillsProp
             <button
               key={category}
               type="button"
+              tabIndex={-1}
               className={styles.pill}
               data-active={value === category || undefined}
               onClick={() => onChange(category)}
