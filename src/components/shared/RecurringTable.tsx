@@ -70,7 +70,12 @@ export function RecurringTable({
     closeDelete,
   } = useCrudDialogs()
 
-  const sorted = useMemo(() => sortByCategory(items), [items])
+  // 정렬된 인덱스 → 원본 인덱스 매핑
+  const sortedIndexMap = useMemo(() => {
+    const indices = items.map((_, i) => i)
+    return indices.sort((a, b) => (items[a].category ?? "").localeCompare(items[b].category ?? ""))
+  }, [items])
+  const sorted = useMemo(() => sortedIndexMap.map((i) => items[i]), [items, sortedIndexMap])
   const rowSpans = useMemo(() => computeRowSpans(sorted), [sorted])
   const total = useMemo(() => sumRecurring(items), [items])
 
@@ -163,6 +168,7 @@ export function RecurringTable({
     const displayRowSpans = sortVisible ? new Map<number, number>() : rowSpans
 
     return displayItems.map((item, index) => {
+      const originalIndex = sortVisible ? index : sortedIndexMap[index]
       const span = displayRowSpans.get(index)
 
       const cells = (
@@ -175,8 +181,8 @@ export function RecurringTable({
               <NumberCell
                 value={item.monthly[String(m)] ?? 0}
                 discrepancy={discrepancy}
-                onUpdate={(v) => handleUpdateMonthly(index, m, v)}
-                onAutoAdjust={onAutoAdjust ? () => onAutoAdjust(index, m) : undefined}
+                onUpdate={(v) => handleUpdateMonthly(originalIndex, m, v)}
+                onAutoAdjust={onAutoAdjust ? () => onAutoAdjust(originalIndex, m) : undefined}
                 autoAdjustResult={
                   (item.monthly[String(m)] ?? 0) + (type === "income" ? discrepancy : -discrepancy)
                 }
@@ -196,7 +202,7 @@ export function RecurringTable({
       }
 
       return (
-        <tr key={index} onClick={() => openEdit(index)} data-clickable>
+        <tr key={originalIndex} onClick={() => openEdit(originalIndex)} data-clickable>
           {cells}
         </tr>
       )
