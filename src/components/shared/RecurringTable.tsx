@@ -83,9 +83,10 @@ export function RecurringTable({
   const handleUpdateMonthly = useCallback(
     async (index: number, month: number, value: number) => {
       const updated = [...items]
+      const { [String(month)]: _, ...rest } = updated[index].monthly
       updated[index] = {
         ...updated[index],
-        monthly: { ...updated[index].monthly, [String(month)]: value },
+        monthly: value === 0 ? rest : { ...updated[index].monthly, [String(month)]: value },
       }
       await write(path, updated)
     },
