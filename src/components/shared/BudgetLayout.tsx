@@ -4,7 +4,7 @@ import { ItemsTable } from "./ItemsTable"
 import { SubTabs } from "./SubTabs"
 import { YearSelect } from "./YearSelect"
 import styles from "./BudgetLayout.module.css"
-import type { ExpenseItem } from "@/schemas"
+import type { ExpenseItem, ProjectExpense, TransactionItem } from "@/schemas"
 import { useUIStore } from "@/stores/ui"
 import { useSubTabs } from "@/hooks/useSubTabs"
 import { useAvailableYears } from "@/hooks/useAvailableYears"
@@ -13,7 +13,7 @@ import { useYearData } from "@/hooks/useYearData"
 import { collectCategoriesFromItems } from "@/lib/grouping"
 import { calculateBalance } from "@/lib/calculations"
 import { updateItem, write } from "@/lib/database"
-import { isProjectExpense } from "@/lib/utils"
+import { getProjectItems, isProjectExpense } from "@/lib/utils"
 import { sourcePath } from "@/lib/paths"
 
 interface BudgetLayoutProps {
@@ -113,9 +113,13 @@ export function BudgetLayout({ source }: BudgetLayoutProps) {
   )
 
   // 서브탭 (수입/지출 독립)
-  const incomeSubTabs = useSubTabs(incomeItems)
+  const incomeSubTabs = useSubTabs(incomeItems, (item) => item.amount)
   const expenseSubTabs = useSubTabs(
     expenseItems as Array<ExpenseItem & { month?: number; category?: string }>,
+    (item) =>
+      isProjectExpense(item as ExpenseItem)
+        ? getProjectItems(item as ProjectExpense).reduce((s, sub) => s + sub.amount, 0)
+        : (item as TransactionItem).amount,
   )
 
   // 로딩/에러 상태

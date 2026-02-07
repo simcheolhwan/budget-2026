@@ -18,14 +18,30 @@ export const extractMonths = <T extends { month?: number }>(
   return hasUndefined ? [undefined, ...sorted] : sorted
 }
 
-// 데이터에서 존재하는 분류 목록 추출.
+// 데이터에서 존재하는 분류 목록 추출 (총금액 내림차순, undefined 맨 앞).
 // viewMode가 "category"일 때 서브탭 목록을 구성한다.
 export const extractCategories = <T extends { category?: string }>(
   items: ReadonlyArray<T>,
+  getAmount: (item: T) => number,
 ): Array<string | undefined> => {
-  const set = new Set<string | undefined>()
-  for (const item of items) set.add(item.category)
-  return [...set]
+  const totals = new Map<string | undefined, number>()
+  for (const item of items) {
+    const key = item.category
+    totals.set(key, (totals.get(key) ?? 0) + getAmount(item))
+  }
+
+  let hasUndefined = false
+  const entries: Array<[string, number]> = []
+  for (const [key, total] of totals) {
+    if (key === undefined) {
+      hasUndefined = true
+    } else {
+      entries.push([key, total])
+    }
+  }
+
+  const sorted = entries.sort((a, b) => b[1] - a[1]).map(([key]) => key)
+  return hasUndefined ? [undefined, ...sorted] : sorted
 }
 
 // 특정 항목 목록에서 분류 수집 (빈도 높은 순).

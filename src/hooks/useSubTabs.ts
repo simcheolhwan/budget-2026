@@ -18,6 +18,7 @@ interface SubTabsResult {
 // route, viewMode, year 변경 시 activeTab을 "모두"(null)로 리셋.
 export function useSubTabs<T extends { month?: number; category?: string }>(
   items: ReadonlyArray<T>,
+  getAmount: (item: T) => number,
 ): SubTabsResult {
   const viewMode = useUIStore((s) => s.viewMode)
   const year = useUIStore((s) => s.year)
@@ -33,7 +34,7 @@ export function useSubTabs<T extends { month?: number; category?: string }>(
     viewMode === "monthly"
       ? extractMonths(items)
       : viewMode === "category"
-        ? extractCategories(items)
+        ? extractCategories(items, getAmount)
         : []
 
   return { tabs, activeTab, setActiveTab, viewMode }
