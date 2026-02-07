@@ -1,4 +1,5 @@
-import { Container, Stack, Tabs } from "@mantine/core"
+import { Container, Stack, Tabs, Text } from "@mantine/core"
+import { sum } from "ramda"
 import { useAnnual } from "../../firebase/read"
 import Filter, { useFilterState } from "./Filter"
 import ItemError from "./ItemError"
@@ -8,6 +9,11 @@ const Full = () => {
   const [{ year }, setFilter] = useFilterState()
   const annual = useAnnual()
   const years = Object.keys(annual)
+
+  const data = annual[year]
+  const income = data ? sum(data.income.map(({ amount }) => amount)) : 0
+  const expense = data ? sum(data.expense.map(({ amount }) => amount)) : 0
+  const net = income - expense
 
   return (
     <Container size="sm">
@@ -30,6 +36,10 @@ const Full = () => {
             </Tabs.Panel>
           ))}
         </Tabs>
+
+        <Text ta="right" fz="sm" c="dimmed" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {net.toLocaleString()}
+        </Text>
       </Stack>
     </Container>
   )
