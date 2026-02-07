@@ -77,7 +77,6 @@ export function ItemsTable({
 }: ItemsTableProps) {
   const viewMode = useUIStore((s) => s.viewMode)
   const sortVisible = useUIStore((s) => s.sortVisible)
-  const year = useUIStore((s) => s.year)
   const {
     editIndex,
     showAdd,
@@ -222,8 +221,8 @@ export function ItemsTable({
             <table>
               <thead>
                 <tr>
-                  <th>월</th>
-                  <th>분류</th>
+                  <th className={styles.monthCol}>월</th>
+                  <th className={styles.catCol}>분류</th>
                   <th>항목</th>
                   <th>메모</th>
                   <th>{formatNumber(total)}</th>
@@ -237,8 +236,12 @@ export function ItemsTable({
         <table>
           <thead>
             <tr>
-              {!(viewMode === "monthly" && activeTab !== null) && <th>월</th>}
-              {!(viewMode === "category" && activeTab !== null) && <th>분류</th>}
+              {!(viewMode === "monthly" && activeTab !== null) && (
+                <th className={styles.monthCol}>월</th>
+              )}
+              {!(viewMode === "category" && activeTab !== null) && (
+                <th className={styles.catCol}>분류</th>
+              )}
               <th>항목</th>
               <th>메모</th>
               <th>{formatNumber(total)}</th>
@@ -328,7 +331,7 @@ export function ItemsTable({
         return (
           <SortableRow key={index} id={keys[index]}>
             <td data-placeholder={!item.month || undefined}>
-              {item.month ? `${item.month}월` : `${year}년`}
+              {item.month ? `${item.month}월` : <IconQuestionMark size={14} />}
             </td>
             <td data-placeholder={!item.category || undefined}>
               {item.category || <IconQuestionMark size={14} />}
@@ -347,7 +350,7 @@ export function ItemsTable({
         <tr key={index} onClick={() => handleRowClick(index)} data-clickable>
           {!(viewMode === "monthly" && activeTab !== null) && (
             <td data-placeholder={!item.month || undefined}>
-              {item.month ? `${item.month}월` : `${year}년`}
+              {item.month ? `${item.month}월` : <IconQuestionMark size={14} />}
             </td>
           )}
           {!(viewMode === "category" && activeTab !== null) && (
