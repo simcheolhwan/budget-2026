@@ -59,8 +59,12 @@ function SearchResultRow({ result }: { result: SearchResult }) {
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("")
 
-  const { data: personalData } = useFirebaseSync<Record<string, YearData>>(personalRootPath())
-  const { data: familyData } = useFirebaseSync<Record<string, YearData>>(familyRootPath())
+  const { data: personalData } = useFirebaseSync<Record<string, YearData>>(
+    open ? personalRootPath() : null,
+  )
+  const { data: familyData } = useFirebaseSync<Record<string, YearData>>(
+    open ? familyRootPath() : null,
+  )
 
   const index = useMemo(
     () => buildSearchIndex(personalData, familyData),

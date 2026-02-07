@@ -45,7 +45,6 @@ export function ConfirmDialog({
               type="button"
               onClick={() => {
                 onConfirm()
-                onClose()
               }}
             >
               {confirmLabel}

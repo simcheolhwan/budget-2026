@@ -55,8 +55,12 @@ export function RecurringFormDialog({
       ...data,
       monthly: defaultValues?.monthly ?? {},
     }
-    await onSubmit(item)
-    onClose()
+    try {
+      await onSubmit(item)
+      onClose()
+    } catch {
+      // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)
+    }
   })
 
   return (

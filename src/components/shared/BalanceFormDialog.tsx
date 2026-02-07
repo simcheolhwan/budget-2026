@@ -49,8 +49,12 @@ export function BalanceFormDialog({
   }, [open, defaultValues, reset])
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    await onSubmit(data)
-    onClose()
+    try {
+      await onSubmit(data)
+      onClose()
+    } catch {
+      // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)
+    }
   })
 
   return (

@@ -72,26 +72,37 @@ export function ExpenseFormDialog({
     const { isProject: isProjectChecked, ...rest } = data
     const cleaned = Object.fromEntries(
       Object.entries(rest).map(([k, v]) => [k, v === "" ? undefined : v]),
-    )
+    ) as Record<string, unknown>
 
+    let item: ExpenseItem
     if (isProjectChecked) {
       // 프로젝트 지출: amount 제거, items 빈 배열
-      const projectItem = {
-        category: cleaned.category,
-        month: cleaned.month,
-        name: cleaned.name,
-        memo: cleaned.memo,
+      item = {
+        category: cleaned.category as string | undefined,
+        month: cleaned.month as number | undefined,
+        name: cleaned.name as string | undefined,
+        memo: cleaned.memo as string | undefined,
         items:
           isExistingProject && defaultValues && "items" in defaultValues
             ? (defaultValues as { items: Array<ProjectItem> }).items
             : [],
       }
-      await onSubmit(projectItem as ExpenseItem)
     } else {
-      await onSubmit(cleaned as unknown as ExpenseItem)
+      item = {
+        category: cleaned.category as string | undefined,
+        month: cleaned.month as number | undefined,
+        name: cleaned.name as string | undefined,
+        memo: cleaned.memo as string | undefined,
+        amount: cleaned.amount as number,
+      }
     }
 
-    onClose()
+    try {
+      await onSubmit(item)
+      onClose()
+    } catch {
+      // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)
+    }
   })
 
   return (

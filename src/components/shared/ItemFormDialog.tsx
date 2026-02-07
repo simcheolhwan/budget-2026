@@ -57,8 +57,12 @@ export function ItemFormDialog({
     const cleaned = Object.fromEntries(
       Object.entries(data).map(([k, v]) => [k, v === "" ? undefined : v]),
     ) as TransactionItem
-    await onSubmit(cleaned)
-    onClose()
+    try {
+      await onSubmit(cleaned)
+      onClose()
+    } catch {
+      // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)
+    }
   })
 
   return (

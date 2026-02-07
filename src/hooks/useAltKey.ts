@@ -6,16 +6,22 @@ const listeners = new Set<() => void>()
 const notify = () => listeners.forEach((l) => l())
 
 document.addEventListener("keydown", (e) => {
-  altKey = e.altKey
-  notify()
+  if (altKey !== e.altKey) {
+    altKey = e.altKey
+    notify()
+  }
 })
 document.addEventListener("keyup", (e) => {
-  altKey = e.altKey
-  notify()
+  if (altKey !== e.altKey) {
+    altKey = e.altKey
+    notify()
+  }
 })
 window.addEventListener("blur", () => {
-  altKey = false
-  notify()
+  if (altKey) {
+    altKey = false
+    notify()
+  }
 })
 
 // Alt 키 눌림 상태 (이벤트 리스너 공유)
