@@ -1,9 +1,9 @@
 import { useCallback } from "react"
 import { Dialog } from "@base-ui/react/dialog"
+import { IconPlus } from "@tabler/icons-react"
 import styles from "./ProjectDetailDialog.module.css"
 import { ProjectItemFormDialog } from "./ProjectItemFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
-import { AddButton } from "./AddButton"
 import type { ProjectExpense, ProjectItem } from "@/schemas"
 import { formatNumber, getProjectItems } from "@/lib/utils"
 import { sumAmounts } from "@/lib/calculations"
@@ -68,10 +68,6 @@ export function ProjectDetailDialog({
         <Dialog.Popup className={styles.popup}>
           <Dialog.Title className={styles.title}>{project.name} — 프로젝트 상세</Dialog.Title>
 
-          <header className={styles.addHeader}>
-            <AddButton onClick={openAdd} label="하위 항목 추가" />
-          </header>
-
           {items.length === 0 ? (
             <p data-empty>항목 없음</p>
           ) : (
@@ -79,7 +75,7 @@ export function ProjectDetailDialog({
               <thead>
                 <tr>
                   <th>항목</th>
-                  <th>금액</th>
+                  <th>{formatNumber(total)}</th>
                 </tr>
               </thead>
               <tbody>
@@ -90,16 +86,14 @@ export function ProjectDetailDialog({
                   </tr>
                 ))}
               </tbody>
-              <tfoot>
-                <tr>
-                  <td>합계</td>
-                  <td>{formatNumber(total)}</td>
-                </tr>
-              </tfoot>
             </table>
           )}
 
           <footer className={styles.footer}>
+            <button type="button" className={styles.addButton} onClick={openAdd}>
+              <IconPlus size={16} aria-hidden />
+              항목 추가
+            </button>
             <Dialog.Close
               render={
                 <button type="button" className={styles.closeButton}>
