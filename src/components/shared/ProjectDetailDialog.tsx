@@ -5,7 +5,7 @@ import { ProjectItemFormDialog } from "./ProjectItemFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
 import { AddButton } from "./AddButton"
 import type { ProjectExpense, ProjectItem } from "@/schemas"
-import { formatNumber } from "@/lib/utils"
+import { formatNumber, getProjectItems } from "@/lib/utils"
 import { sumAmounts } from "@/lib/calculations"
 import { useCrudDialogs } from "@/hooks/useCrudDialogs"
 
@@ -35,7 +35,7 @@ export function ProjectDetailDialog({
     closeDelete,
   } = useCrudDialogs()
 
-  const items = project.items
+  const items = getProjectItems(project)
   const total = sumAmounts(items)
 
   const handleAdd = useCallback(

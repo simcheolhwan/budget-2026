@@ -1,7 +1,7 @@
 // 순수 계산 함수. 외부 의존성 없이 스키마 타입만 사용한다.
 // 수지(calculateBalance), 순자산(calculateNetAssets), 오차(calculateDiscrepancy) 세 함수가
 // useSummary 훅에서 조합되어 사이드바의 오차 표시 및 NumberCell의 자동 조정에 사용된다.
-import { isProjectExpense } from "./utils"
+import { getProjectItems, isProjectExpense } from "./utils"
 import type { BalanceItem, BudgetGroup, ExpenseItem, Recurring, TransactionItem } from "@/schemas"
 
 // 금액 합계 (amount 필드를 가진 모든 항목)
@@ -12,7 +12,7 @@ export const sumAmounts = <T extends { amount: number }>(items: ReadonlyArray<T>
 export const sumExpenseItems = (items: ReadonlyArray<ExpenseItem>): number =>
   items.reduce((sum, item) => {
     if (isProjectExpense(item)) {
-      return sum + item.items.reduce((s, sub) => s + sub.amount, 0)
+      return sum + getProjectItems(item).reduce((s, sub) => s + sub.amount, 0)
     }
     return sum + item.amount
   }, 0)
@@ -72,7 +72,7 @@ export function getItemSpending(
     .filter((item) => item.category === budgetItemName)
     .reduce((sum, item) => {
       if (isProjectExpense(item)) {
-        return sum + item.items.reduce((s, sub) => s + sub.amount, 0)
+        return sum + getProjectItems(item).reduce((s, sub) => s + sub.amount, 0)
       }
       return sum + item.amount
     }, 0)
@@ -96,7 +96,7 @@ export function buildSpendingMap(
     const key = item.category
     if (!key) continue
     const amount = isProjectExpense(item)
-      ? item.items.reduce((s, sub) => s + sub.amount, 0)
+      ? getProjectItems(item).reduce((s, sub) => s + sub.amount, 0)
       : item.amount
     map.set(key, (map.get(key) ?? 0) + amount)
   }

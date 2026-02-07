@@ -86,4 +86,14 @@ describe("searchItems", () => {
   it("매칭되지 않으면 빈 결과를 반환한다", () => {
     expect(searchItems("존재하지않는", index)).toHaveLength(0)
   })
+
+  it("프로젝트 이름으로 하위 항목을 검색한다", () => {
+    const projectIndex: Array<SearchResult> = [
+      { source: "personal", year: 2026, name: "항공권", amount: 500, projectName: "여행" },
+      { source: "personal", year: 2026, name: "호텔", amount: 300, projectName: "여행" },
+      { source: "personal", year: 2026, name: "식비", amount: 100 },
+    ]
+    const results = searchItems("여행", projectIndex)
+    expect(results).toHaveLength(2)
+  })
 })

@@ -1,7 +1,7 @@
 // 전체 검색 기능 (⌘K SearchDialog에서 사용).
 // buildSearchIndex로 모든 연도/유형의 데이터를 평탄화한 뒤, searchItems로 실시간 필터링.
 // 프로젝트 지출의 경우 하위 항목 각각이 별도의 검색 결과로 노출된다.
-import { isProjectExpense } from "./utils"
+import { getProjectItems, isProjectExpense } from "./utils"
 import type { ExpenseItem, TransactionItem, YearData } from "@/schemas"
 
 export interface SearchResult {
@@ -44,7 +44,7 @@ const expenseToResults = (
   }
 
   // 프로젝트 하위 항목
-  return item.items.map((sub) => transactionToResult(sub, source, year, item.name))
+  return getProjectItems(item).map((sub) => transactionToResult(sub, source, year, item.name))
 }
 
 // 검색 인덱스 구축. 개인/가족의 모든 연도/수입/지출을 평탄화하여 단일 배열로 만든다.
@@ -90,6 +90,9 @@ export const searchItems = (
   return index.filter((item) => {
     const name = item.name?.toLowerCase() ?? ""
     const memo = item.memo?.toLowerCase() ?? ""
-    return name.includes(normalized) || memo.includes(normalized)
+    const projectName = item.projectName?.toLowerCase() ?? ""
+    return (
+      name.includes(normalized) || memo.includes(normalized) || projectName.includes(normalized)
+    )
   })
 }

@@ -1,5 +1,5 @@
 // 공통 유틸리티 함수. 외부 의존성 없는 순수 함수.
-import type { ExpenseItem, ProjectExpense } from "@/schemas"
+import type { ExpenseItem, ProjectExpense, ProjectItem } from "@/schemas"
 
 // 숫자 포맷팅 (천 단위 구분, 한국어 로케일)
 const numberFormat = new Intl.NumberFormat("ko-KR")
@@ -33,5 +33,11 @@ export const getCurrentMonth = (): number => new Date().getMonth() + 1
 
 // ExpenseItem union을 분기하는 타입 가드.
 // 계산(sumExpenseItems), 검색(expenseToResults), UI(ItemsTable) 전반에서 사용.
+// Firebase Realtime Database는 빈 배열을 저장하지 않으므로,
+// items가 삭제된 프로젝트 지출도 amount 부재로 식별한다.
 export const isProjectExpense = (item: ExpenseItem): item is ProjectExpense =>
-  "items" in item && Array.isArray(item.items)
+  ("items" in item && Array.isArray(item.items)) || !("amount" in item)
+
+// Firebase가 빈 items 배열을 삭제했을 때 안전하게 접근
+export const getProjectItems = (item: ProjectExpense): Array<ProjectItem> =>
+  Array.isArray(item.items) ? item.items : []
