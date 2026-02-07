@@ -38,6 +38,11 @@
   white-space: nowrap;
 }
 
+/* 플레이스홀더 (미지정 월/분류) */
+.section table td[data-placeholder] {
+  color: var(--text-tertiary);
+}
+
 /* 메모 컬럼 말줄임 */
 .section table td[data-memo] {
   overflow: hidden;

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { IconQuestionMark } from "@tabler/icons-react"
 import { NumberCell } from "./NumberCell"
 import { RecurringFormDialog } from "./RecurringFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
@@ -174,8 +175,16 @@ export function RecurringTable({
 
       const cells = (
         <>
-          {!sortVisible && span !== undefined && <td rowSpan={span}>{item.category}</td>}
-          {sortVisible && <td>{item.category}</td>}
+          {!sortVisible && span !== undefined && (
+            <td rowSpan={span} data-placeholder={!item.category || undefined}>
+              {item.category || <IconQuestionMark size={14} />}
+            </td>
+          )}
+          {sortVisible && (
+            <td data-placeholder={!item.category || undefined}>
+              {item.category || <IconQuestionMark size={14} />}
+            </td>
+          )}
           <td>{item.name}</td>
           {MONTHS.map((m) => (
             <td key={m} className={styles.numCol}>

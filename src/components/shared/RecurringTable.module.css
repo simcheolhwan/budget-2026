@@ -43,6 +43,11 @@
   white-space: nowrap;
 }
 
+/* 플레이스홀더 (미지정 분류) */
+.section table td[data-placeholder] {
+  color: var(--text-tertiary);
+}
+
 /* 합계 행 */
 .totalRow {
   font-weight: 600;

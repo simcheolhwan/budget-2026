@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { DndContext, closestCenter } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { IconQuestionMark } from "@tabler/icons-react"
 import { ItemFormDialog } from "./ItemFormDialog"
 import { ExpenseFormDialog } from "./ExpenseFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
@@ -76,6 +77,7 @@ export function ItemsTable({
 }: ItemsTableProps) {
   const viewMode = useUIStore((s) => s.viewMode)
   const sortVisible = useUIStore((s) => s.sortVisible)
+  const year = useUIStore((s) => s.year)
   const {
     editIndex,
     showAdd,
@@ -325,8 +327,12 @@ export function ItemsTable({
       if (showSort) {
         return (
           <SortableRow key={index} id={keys[index]}>
-            <td>{item.month ? `${item.month}월` : ""}</td>
-            <td>{item.category}</td>
+            <td data-placeholder={!item.month || undefined}>
+              {item.month ? `${item.month}월` : `${year}년`}
+            </td>
+            <td data-placeholder={!item.category || undefined}>
+              {item.category || <IconQuestionMark size={14} />}
+            </td>
             <td>
               {item.name}
               {isProject && <ProjectBadge />}
@@ -340,9 +346,15 @@ export function ItemsTable({
       return (
         <tr key={index} onClick={() => handleRowClick(index)} data-clickable>
           {!(viewMode === "monthly" && activeTab !== null) && (
-            <td>{item.month ? `${item.month}월` : ""}</td>
+            <td data-placeholder={!item.month || undefined}>
+              {item.month ? `${item.month}월` : `${year}년`}
+            </td>
           )}
-          {!(viewMode === "category" && activeTab !== null) && <td>{item.category}</td>}
+          {!(viewMode === "category" && activeTab !== null) && (
+            <td data-placeholder={!item.category || undefined}>
+              {item.category || <IconQuestionMark size={14} />}
+            </td>
+          )}
           <td>
             {item.name}
             {isProject && <ProjectBadge />}
