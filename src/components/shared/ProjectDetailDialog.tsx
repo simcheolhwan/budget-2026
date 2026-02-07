@@ -66,7 +66,7 @@ export function ProjectDetailDialog({
       <Dialog.Portal>
         <Dialog.Backdrop className={styles.backdrop} />
         <Dialog.Popup className={styles.popup}>
-          <Dialog.Title className={styles.title}>{project.name} — 프로젝트 상세</Dialog.Title>
+          <Dialog.Title className={styles.title}>{project.name}</Dialog.Title>
 
           {items.length === 0 ? (
             <p data-empty>항목 없음</p>
