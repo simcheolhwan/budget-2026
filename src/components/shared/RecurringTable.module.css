@@ -53,6 +53,16 @@
   font-weight: 600;
 }
 
+/* 분류 컬럼 — 고정 폭 */
+.catCol {
+  width: 6em;
+}
+
+/* 항목 컬럼 — 고정 폭 */
+.nameCol {
+  width: 6em;
+}
+
 /* 월/합계 컬럼 — 숫자이므로 우측 정렬 (rowSpan과 무관하게 동작) */
 .numCol {
   text-align: right;

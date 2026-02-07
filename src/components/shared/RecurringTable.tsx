@@ -176,16 +176,20 @@ export function RecurringTable({
       const cells = (
         <>
           {!sortVisible && span !== undefined && (
-            <td rowSpan={span} data-placeholder={!item.category || undefined}>
+            <td
+              rowSpan={span}
+              className={styles.catCol}
+              data-placeholder={!item.category || undefined}
+            >
               {item.category || <IconQuestionMark size={14} />}
             </td>
           )}
           {sortVisible && (
-            <td data-placeholder={!item.category || undefined}>
+            <td className={styles.catCol} data-placeholder={!item.category || undefined}>
               {item.category || <IconQuestionMark size={14} />}
             </td>
           )}
-          <td>{item.name}</td>
+          <td className={styles.nameCol}>{item.name}</td>
           {MONTHS.map((m) => (
             <td key={m} className={styles.numCol}>
               <NumberCell
@@ -231,8 +235,8 @@ export function RecurringTable({
           <table>
             <thead>
               <tr>
-                <th>분류</th>
-                <th>항목</th>
+                <th className={styles.catCol}>분류</th>
+                <th className={styles.nameCol}>항목</th>
                 {MONTHS.map((m) => (
                   <th key={m} className={styles.numCol}>
                     {m}월
