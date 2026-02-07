@@ -1,0 +1,20 @@
+/* 추가 버튼 — ghost 스타일 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-tertiary);
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.button:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}

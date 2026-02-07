@@ -1,0 +1,35 @@
+/* 인증 후 앱 레이아웃. Header + Sidebar + Main + SearchDialog + 키보드 단축키.
+   모바일에서 사이드바는 숨기고 SidebarDrawer로 대체. */
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebarContainer {
+  display: contents;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .sidebarContainer {
+    display: none;
+  }
+
+  .main {
+    padding: var(--space-4);
+  }
+}

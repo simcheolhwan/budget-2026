@@ -1,0 +1,47 @@
+/* 사이드바 잔액 테이블. 계좌/미수금/예수금 3개가 Sidebar에 표시된다.
+   인라인 편집(NumberCell) + DnD 정렬 지원. */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.section table {
+  max-width: 100%;
+  table-layout: fixed;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header h3 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sectionTotal {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+}
+
+/* 분류(첫번째 컬럼) 옅은 색상 + 폭 제한 */
+.section td:first-child {
+  color: var(--text-secondary);
+  width: 4em;
+}
+
+/* 이름(두번째 컬럼) 말줄임 */
+.section td:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

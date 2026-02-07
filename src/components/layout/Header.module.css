@@ -1,0 +1,210 @@
+/* 헤더 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 var(--space-4);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* 사이드바 토글 (모바일에서만 표시) */
+.sidebarToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.sidebarToggle:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+@media (max-width: 768px) {
+  .sidebarToggle {
+    display: inline-flex;
+  }
+}
+
+/* 좌측 메뉴 */
+.nav {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.navLink {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.navLink[aria-current="page"] {
+  color: var(--text-primary);
+  background-color: var(--bg-active);
+}
+
+/* Alt 단축키 인디케이터. Alt 키를 누르면 각 탭 옆에 1/2/3 번호가 표시된다. */
+.shortcutBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  margin-left: var(--space-1);
+  padding: 0 3px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-secondary);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  animation: shortcutFadeIn 120ms ease;
+}
+
+.navLink[aria-current="page"] .shortcutBadge {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+@keyframes shortcutFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 우측 액션 그룹 */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* 보기 모드 토글 그룹 (raw/monthly/category). viewMode에 따라 서브탭 표시가 달라진다. */
+.viewModeGroup {
+  display: flex;
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.viewModeToggle {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.viewModeToggle:hover {
+  color: var(--text-primary);
+}
+
+.viewModeToggle[data-pressed] {
+  color: var(--text-primary);
+  background-color: var(--bg-active);
+}
+
+/* 활성 토글에서 포커스 링 제거 */
+.viewModeToggle[data-pressed]:focus-visible {
+  outline: none;
+}
+
+/* 정렬 토글. 활성화 시 DnD 핸들이 표시되고 행 클릭 편집이 비활성화된다. */
+.sortToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.sortToggle:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.sortToggle[data-pressed] {
+  color: var(--primary);
+  background-color: var(--primary-bg);
+}
+
+/* 로그아웃 버튼 */
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.logoutButton:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+/* 정렬 모드 배너 */
+.sortBanner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--primary);
+  background-color: var(--primary-bg);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 12%, transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .viewModeGroup,
+  .sortToggle {
+    display: none;
+  }
+}

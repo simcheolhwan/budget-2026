@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>
+    @media (prefers-color-scheme: dark) {
+      .icon { stroke: #e8e8ec; }
+    }
+    @media (prefers-color-scheme: light) {
+      .icon { stroke: #0c0c0e; }
+    }
+  </style>
+  <rect class="icon" x="4" y="4" width="16" height="16" rx="2"/>
+  <line class="icon" x1="4" y1="10" x2="20" y2="10"/>
+  <line class="icon" x1="10" y1="4" x2="10" y2="20"/>
+</svg>

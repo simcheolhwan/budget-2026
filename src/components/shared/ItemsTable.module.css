@@ -1,0 +1,46 @@
+/* 수입/지출 항목 테이블.
+   viewMode/activeTab에 따라 필터링하되 원본 인덱스를 유지하여 DB 연산에 정확한 인덱스 전달.
+   DnD, 인라인 편집(NumberCell), 프로젝트 상세를 지원한다. */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+[data-type="income"] .title {
+  color: var(--income-text);
+}
+
+[data-type="expense"] .title {
+  color: var(--expense-text);
+}
+
+.tabs {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 줄바꿈 금지 */
+.section table td {
+  white-space: nowrap;
+}
+
+/* 메모 컬럼 말줄임 */
+.section table td[data-memo] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}

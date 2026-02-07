@@ -1,0 +1,51 @@
+/* 사이드바 */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  padding: var(--space-4);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* 오차 섹션. useSummary에서 계산된 discrepancy(순자산 - 개인수지 - 가족수지) 표시.
+   현재 연도에만 표시되며, 과거 연도는 N/A. */
+.discrepancy {
+  padding: var(--space-3);
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+}
+
+.discrepancy h3 {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1);
+}
+
+.discrepancyNa,
+.discrepancyNone {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.discrepancyValue {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.discrepancyValue[data-positive] {
+  color: var(--income-text);
+}
+
+.discrepancyValue[data-negative] {
+  color: var(--expense-text);
+}

@@ -1,0 +1,6 @@
+{
+  "rules": {
+    ".read": "auth != null && auth.uid === 'YOUR_UID_HERE'",
+    ".write": "auth != null && auth.uid === 'YOUR_UID_HERE'"
+  }
+}

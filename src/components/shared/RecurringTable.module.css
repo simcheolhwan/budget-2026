@@ -1,0 +1,61 @@
+/* 반복 수입/지출 테이블.
+   12개월 × N행 그리드. 동일 category 연속 행은 computeRowSpans로 rowSpan 병합. */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header h3 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* 반복 테이블 제목 — 수입/지출 색상 */
+[data-type="income"] .header h3 {
+  color: var(--income-text);
+}
+
+[data-type="expense"] .header h3 {
+  color: var(--expense-text);
+}
+
+/* 반복 테이블 가로 스크롤 */
+.tableWrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* 반복 테이블 내 줄바꿈 금지 */
+.section table th,
+.section table td {
+  white-space: nowrap;
+}
+
+/* 합계 행 */
+.totalRow {
+  font-weight: 600;
+}
+
+/* 월/합계 컬럼 — 숫자이므로 우측 정렬 (rowSpan과 무관하게 동작) */
+.numCol {
+  text-align: right;
+}
+
+/* 합계 컬럼 (마지막 열) — 굵게 */
+.section table th:last-child,
+.section table td:last-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}

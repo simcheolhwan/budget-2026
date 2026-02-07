@@ -1,0 +1,57 @@
+/* 하위 탭. viewMode에 따라 월별(extractMonths) 또는 분류별(extractCategories) 탭을 표시.
+   route/viewMode/year 변경 시 "모두"로 리셋된다. */
+.list {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+  min-height: 28px;
+}
+
+/* 아이콘 탭 축소 방지 */
+.iconTab {
+  composes: tab;
+  flex-shrink: 0;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.tab[data-active] {
+  color: var(--text-primary);
+  background-color: var(--bg-active);
+}
+
+/* 활성 탭에서 포커스 링 제거 */
+.tab[data-active]:focus-visible {
+  outline: none;
+}
+
+/* 레이아웃 쉬프트 방지용 빈 플레이스홀더 (viewMode가 raw일 때 탭 없이도 높이 유지) */
+.placeholder {
+  min-height: calc(28px + var(--space-1) * 2);
+}
