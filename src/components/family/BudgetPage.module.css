@@ -37,6 +37,10 @@
   font-weight: 400;
 }
 
+.headerSpent {
+  margin-left: var(--space-2);
+}
+
 .headerRemaining {
   margin-left: var(--space-2);
 }
@@ -85,7 +89,7 @@
   width: 100px;
 }
 .colMeter {
-  width: 60px;
+  width: 80px;
 }
 
 /* rowSpan으로 인해 :first-child가 된 셀의 패딩 보정 */

@@ -101,9 +101,10 @@ function BudgetContent({
         <div className={styles.headerTop}>
           <h2 className={styles.title}>예산</h2>
           <span className={styles.summary}>
-            <span className={styles.headerLabel}>지출</span> {formatMan(totalSpent)}
-            &nbsp;/&nbsp;
             <span className={styles.headerLabel}>예산</span> {formatMan(totalBudget)}
+            <span className={styles.headerSpent}>
+              <span className={styles.headerLabel}>지출</span> {formatMan(totalSpent)}
+            </span>
             <span className={styles.headerRemaining} data-status={burnStatus(totalBurnRate)}>
               <span className={styles.headerLabel}>잔액</span> {formatMan(totalRemaining)}
             </span>
@@ -231,7 +232,7 @@ function BudgetTable({
             <td className={styles.numCol} data-status={burnStatus(totals.burnRate)}>
               {formatMan(totals.remaining)}
             </td>
-            <td />
+            <td>{totals.burnRate !== null && <BurnRateMeter value={totals.burnRate} />}</td>
           </tr>
         </thead>
         <tbody>
