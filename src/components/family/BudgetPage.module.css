@@ -88,6 +88,11 @@
   width: 60px;
 }
 
+/* rowSpan으로 인해 :first-child가 된 셀의 패딩 보정 */
+.table tr:not(.totalRow) > td:first-child:not([rowspan]) {
+  padding-left: calc(var(--space-3) / 2);
+}
+
 /* 숫자 열 — 우측 정렬 */
 .numCol {
   text-align: right;
