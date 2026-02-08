@@ -8,6 +8,7 @@ interface UseYearDataResult {
   incomeRecurring: Array<Recurring>
   expenseItems: Array<ExpenseItem>
   expenseRecurring: Array<Recurring>
+  memo?: string
   loading: boolean
   error: Error | null
 }
@@ -29,6 +30,7 @@ export function useYearData(
       incomeRecurring: yearData?.incomes?.recurring ?? [],
       expenseItems: yearData?.expenses?.items ?? [],
       expenseRecurring: yearData?.expenses?.recurring ?? [],
+      memo: yearData?.memo,
       loading,
       error,
     }

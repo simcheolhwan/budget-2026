@@ -6,6 +6,13 @@
   gap: var(--space-3);
 }
 
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
 .trigger {
   display: inline-flex;
   align-items: center;
@@ -17,6 +24,7 @@
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   transition: background-color var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .trigger:hover {
@@ -98,4 +106,120 @@
   font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
   color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* 연도 메모 트리거 */
+.memoTrigger {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 200px;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.memoTrigger:hover {
+  color: var(--text-secondary);
+}
+
+.memoPreview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 메모 다이얼로그 */
+.memoBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 50;
+}
+
+.memoPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 51;
+  width: min(90vw, 360px);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-popup);
+}
+
+.memoTitle {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.memoTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  resize: vertical;
+}
+
+.memoTextarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+
+.memoFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.memoClose {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.memoClose:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.memoSave {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--bg-surface);
+  background-color: var(--primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.memoSave:hover {
+  opacity: 0.9;
+}
+
+.memoSave:disabled {
+  opacity: 0.5;
 }

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 import { Meter } from "@base-ui/react/meter"
+import { IconInfoCircle } from "@tabler/icons-react"
 import styles from "./BudgetTracker.module.css"
 import type { BudgetGroup, BudgetItem, ExpenseItem, Recurring } from "@/schemas"
 import { NumberCell } from "@/components/shared/NumberCell"
@@ -92,6 +93,25 @@ function BudgetContent({
     [budget],
   )
 
+  const handleUpdateBudgetMemo = useCallback(
+    async (
+      section: "monthly" | "annual",
+      groupIndex: number,
+      itemIndex: number,
+      memo: string | null,
+    ) => {
+      const groups = [...budget[section]]
+      const group = { ...groups[groupIndex] }
+      const items = [...group.items]
+      const { memo: _, ...rest } = items[itemIndex]
+      items[itemIndex] = memo ? { ...rest, memo } : rest
+      group.items = items
+      groups[groupIndex] = group
+      await write(budgetPath(), { ...budget, [section]: groups })
+    },
+    [budget],
+  )
+
   const totalBurnRate = calculateBurnRate(totalSpent, totalBudget)
   const totalRemaining = totalBudget - totalSpent
 
@@ -121,6 +141,7 @@ function BudgetContent({
           totalBudget={totalBudget}
           spendingMap={spendingMap}
           onUpdateAmount={(gi, ii, v) => handleUpdateBudgetItem("monthly", gi, ii, v)}
+          onUpdateMemo={(gi, ii, m) => handleUpdateBudgetMemo("monthly", gi, ii, m)}
         />
       )}
       {budget.annual.length > 0 && (
@@ -131,6 +152,7 @@ function BudgetContent({
           totalBudget={totalBudget}
           spendingMap={spendingMap}
           onUpdateAmount={(gi, ii, v) => handleUpdateBudgetItem("annual", gi, ii, v)}
+          onUpdateMemo={(gi, ii, m) => handleUpdateBudgetMemo("annual", gi, ii, m)}
         />
       )}
     </div>
@@ -154,6 +176,7 @@ function BudgetTable({
   totalBudget,
   spendingMap,
   onUpdateAmount,
+  onUpdateMemo,
 }: {
   title: string
   groups: ReadonlyArray<BudgetGroup>
@@ -161,6 +184,7 @@ function BudgetTable({
   totalBudget: number
   spendingMap: Map<string, number>
   onUpdateAmount: (groupIndex: number, itemIndex: number, value: number) => Promise<void>
+  onUpdateMemo: (groupIndex: number, itemIndex: number, memo: string | null) => Promise<void>
 }) {
   const isMonthly = multiplier > 1
 
@@ -253,7 +277,7 @@ function BudgetTable({
                     </td>
                   )}
                   <td>
-                    <CardName item={item} />
+                    <CardName item={item} onUpdateMemo={(m) => onUpdateMemo(gi, ii, m)} />
                     <span className={styles.pctInline}>{pct(annualized)}%</span>
                   </td>
                   <td className={styles.numCol}>
@@ -305,9 +329,36 @@ function BurnRateMeter({ value }: { value: number }) {
   )
 }
 
-// 항목 이름 + 메모 다이얼로그
-function CardName({ item }: { item: BudgetItem }) {
+// 항목 이름 + 메모 편집 다이얼로그
+function CardName({
+  item,
+  onUpdateMemo,
+}: {
+  item: BudgetItem
+  onUpdateMemo: (memo: string | null) => Promise<void>
+}) {
   const [open, setOpen] = useState(false)
+  const [draft, setDraft] = useState("")
+  const [saving, setSaving] = useState(false)
+
+  const handleOpen = useCallback(
+    (nextOpen: boolean) => {
+      if (nextOpen) setDraft(item.memo ?? "")
+      setOpen(nextOpen)
+    },
+    [item.memo],
+  )
+
+  const handleSave = useCallback(async () => {
+    setSaving(true)
+    try {
+      const trimmed = draft.trim()
+      await onUpdateMemo(trimmed || null)
+      setOpen(false)
+    } finally {
+      setSaving(false)
+    }
+  }, [draft, onUpdateMemo])
 
   if (!item.memo) {
     return <span className={styles.itemName}>{item.name}</span>
@@ -316,17 +367,30 @@ function CardName({ item }: { item: BudgetItem }) {
   return (
     <span className={styles.itemName}>
       {item.name}
-      <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Trigger className={styles.memoIndicator}>
-          <span aria-hidden>i</span>
+      <Dialog.Root open={open} onOpenChange={handleOpen}>
+        <Dialog.Trigger className={styles.memoIndicator} aria-label="메모 편집">
+          <IconInfoCircle size={14} aria-hidden />
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Backdrop className={styles.memoBackdrop} />
           <Dialog.Popup className={styles.memoPopup}>
             <Dialog.Title className={styles.memoTitle}>{item.name}</Dialog.Title>
-            <p className={styles.memoContent}>{item.memo}</p>
+            <textarea
+              className={styles.memoTextarea}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.metaKey) handleSave()
+              }}
+              rows={4}
+              placeholder="메모…"
+              autoFocus
+            />
             <footer className={styles.memoFooter}>
-              <Dialog.Close className={styles.memoClose}>닫기</Dialog.Close>
+              <Dialog.Close className={styles.memoClose}>취소</Dialog.Close>
+              <button className={styles.memoSave} onClick={handleSave} disabled={saving}>
+                저장
+              </button>
             </footer>
           </Dialog.Popup>
         </Dialog.Portal>

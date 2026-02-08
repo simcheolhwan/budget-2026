@@ -179,22 +179,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
   margin-left: var(--space-1);
-  font-size: 10px;
-  font-style: italic;
-  font-weight: 600;
   line-height: 1;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-full);
+  color: var(--text-tertiary);
   vertical-align: middle;
 }
 
 .memoIndicator:hover {
   color: var(--text-primary);
-  border-color: var(--text-secondary);
 }
 
 /* 메모 다이얼로그 */
@@ -226,16 +218,28 @@
   margin-bottom: var(--space-3);
 }
 
-.memoContent {
+.memoTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
   line-height: 1.6;
-  color: var(--text-secondary);
-  white-space: pre-line;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  resize: vertical;
+}
+
+.memoTextarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
 }
 
 .memoFooter {
   display: flex;
   justify-content: flex-end;
+  gap: var(--space-2);
   margin-top: var(--space-4);
 }
 
@@ -255,4 +259,25 @@
 .memoClose:hover {
   color: var(--text-primary);
   background-color: var(--bg-hover);
+}
+
+.memoSave {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--bg-surface);
+  background-color: var(--primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.memoSave:hover {
+  opacity: 0.9;
+}
+
+.memoSave:disabled {
+  opacity: 0.5;
 }

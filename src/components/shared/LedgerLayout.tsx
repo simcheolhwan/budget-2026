@@ -14,7 +14,7 @@ import { collectCategoriesFromItems } from "@/lib/grouping"
 import { calculateBalance } from "@/lib/calculations"
 import { updateSortedItem, write } from "@/lib/database"
 import { getProjectItems, isProjectExpense } from "@/lib/utils"
-import { sourcePath } from "@/lib/paths"
+import { sourcePath, yearMemoPath } from "@/lib/paths"
 
 async function autoAdjustRecurringMonth(
   items: Array<Recurring>,
@@ -61,7 +61,7 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
   const setYear = useUIStore((s) => s.setYear)
 
   const data = useYearData(source)
-  const { incomeItems, expenseItems, incomeRecurring, expenseRecurring } = data
+  const { incomeItems, expenseItems, incomeRecurring, expenseRecurring, memo } = data
 
   const { years } = useAvailableYears(source)
   const { discrepancy } = useSummary()
@@ -134,6 +134,14 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
     [expenseItems, expensePath, discrepancy],
   )
 
+  // 연도별 메모 수정
+  const handleUpdateYearMemo = useCallback(
+    async (value: string | null) => {
+      await write(yearMemoPath(source, year), value)
+    },
+    [source, year],
+  )
+
   // 서브탭 (수입/지출 독립)
   const incomeSubTabs = useSubTabs(incomeItems, (item) => item.amount)
   const expenseSubTabs = useSubTabs(
@@ -151,7 +159,14 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
   return (
     <div className={styles.layout}>
       {/* 연도 선택 */}
-      <YearSelect years={years} currentYear={year} balance={balance} onYearChange={setYear} />
+      <YearSelect
+        years={years}
+        currentYear={year}
+        balance={balance}
+        onYearChange={setYear}
+        memo={memo}
+        onUpdateMemo={handleUpdateYearMemo}
+      />
 
       {/* 반복 테이블 */}
       <div className={styles.recurringSection}>

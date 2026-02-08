@@ -116,6 +116,7 @@ interface ExpenseSection {
 export interface YearData {
   incomes?: IncomeSection
   expenses?: ExpenseSection
+  memo?: string
 }
 
 // --- 잔액 현황 ---

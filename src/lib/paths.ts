@@ -27,5 +27,9 @@ export const sourcePath = (
   sub: "items" | "recurring",
 ) => (source === "personal" ? personalPath : familyPath)(year, section, sub)
 
+// 연도별 메모 경로 (LedgerLayout)
+export const yearMemoPath = (source: "personal" | "family", year: number) =>
+  `${source}/${year}/memo` as const
+
 // 예산 경로 (BudgetTracker)
 export const budgetPath = () => "budget" as const
