@@ -20,10 +20,16 @@ export const parseOperatorInput = (input: string, current: number): number | nul
   return Number.isNaN(value) ? null : value
 }
 
-// month 기준 오름차순 정렬 (month 없는 항목 맨 앞).
+// month 기준 오름차순, 같은 월 내 category 가나다순 정렬 (month 없는 항목 맨 앞).
 // database.ts의 addItem/updateItem이 저장 전 호출하여 자동 정렬을 보장한다.
-export const sortByMonth = <T extends { month?: number }>(items: Array<T>): Array<T> =>
-  [...items].sort((a, b) => (a.month ?? 0) - (b.month ?? 0))
+export const sortByMonth = <T extends { month?: number; category?: string }>(
+  items: Array<T>,
+): Array<T> =>
+  [...items].sort((a, b) => {
+    const monthDiff = (a.month ?? 0) - (b.month ?? 0)
+    if (monthDiff !== 0) return monthDiff
+    return (a.category ?? "").localeCompare(b.category ?? "")
+  })
 
 // 현재 연도
 export const getCurrentYear = (): number => new Date().getFullYear()

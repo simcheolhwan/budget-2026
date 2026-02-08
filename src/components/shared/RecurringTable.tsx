@@ -43,11 +43,6 @@ function computeRowSpans(items: Array<Recurring>): Map<number, number> {
   return spans
 }
 
-// category 기준 정렬
-function sortByCategory(items: Array<Recurring>): Array<Recurring> {
-  return [...items].sort((a, b) => (a.category ?? "").localeCompare(b.category ?? ""))
-}
-
 // 반복 수입/지출 테이블
 export function RecurringTable({
   items,
@@ -95,7 +90,7 @@ export function RecurringTable({
   // 항목 추가
   const handleAdd = useCallback(
     async (item: Recurring) => {
-      await addItem(path, items, item, sortByCategory)
+      await addItem(path, items, item)
     },
     [items, path],
   )
@@ -105,7 +100,7 @@ export function RecurringTable({
     async (item: Recurring) => {
       if (editIndex === null) return
       const mergedItem = { ...items[editIndex], ...item, monthly: items[editIndex].monthly ?? {} }
-      await updateItem(path, items, editIndex, mergedItem, sortByCategory)
+      await updateItem(path, items, editIndex, mergedItem)
     },
     [items, path, editIndex],
   )
