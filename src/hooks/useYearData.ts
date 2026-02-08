@@ -1,8 +1,7 @@
 import { useMemo } from "react"
-import { useFirebaseSync } from "./useFirebaseSync"
 import type { ExpenseItem, Recurring, TransactionItem } from "@/schemas"
 import { useUIStore } from "@/stores/ui"
-import { familyPath, personalPath } from "@/lib/paths"
+import { useFirebaseData } from "@/contexts/FirebaseDataContext"
 
 interface UseYearDataResult {
   incomeItems: Array<TransactionItem>
@@ -14,53 +13,24 @@ interface UseYearDataResult {
 }
 
 // 개인 또는 가족 연간 데이터 로드.
-// 4개 경로(수입 items/recurring, 지출 items/recurring)를 useFirebaseSync로 병렬 구독.
-// BudgetLayout, useSummary에서 사용.
+// 루트 구독에서 연도별 데이터를 파생. 연도 변경 시 새 리스너 등록 없음.
 export function useYearData(
   source: "personal" | "family",
   yearOverride?: number,
 ): UseYearDataResult {
   const storeYear = useUIStore((s) => s.year)
   const year = yearOverride ?? storeYear
-  const pathFn = source === "personal" ? personalPath : familyPath
+  const { data, loading, error } = useFirebaseData()[source]
 
-  const incomeItemsState = useFirebaseSync<Array<TransactionItem>>(pathFn(year, "incomes", "items"))
-  const incomeRecurringState = useFirebaseSync<Array<Recurring>>(
-    pathFn(year, "incomes", "recurring"),
-  )
-  const expenseItemsState = useFirebaseSync<Array<ExpenseItem>>(pathFn(year, "expenses", "items"))
-  const expenseRecurringState = useFirebaseSync<Array<Recurring>>(
-    pathFn(year, "expenses", "recurring"),
-  )
-
-  const loading =
-    incomeItemsState.loading ||
-    incomeRecurringState.loading ||
-    expenseItemsState.loading ||
-    expenseRecurringState.loading
-
-  const error =
-    incomeItemsState.error ??
-    incomeRecurringState.error ??
-    expenseItemsState.error ??
-    expenseRecurringState.error
-
-  return useMemo(
-    () => ({
-      incomeItems: incomeItemsState.data ?? [],
-      incomeRecurring: incomeRecurringState.data ?? [],
-      expenseItems: expenseItemsState.data ?? [],
-      expenseRecurring: expenseRecurringState.data ?? [],
+  return useMemo(() => {
+    const yearData = data?.[year]
+    return {
+      incomeItems: yearData?.incomes?.items ?? [],
+      incomeRecurring: yearData?.incomes?.recurring ?? [],
+      expenseItems: yearData?.expenses?.items ?? [],
+      expenseRecurring: yearData?.expenses?.recurring ?? [],
       loading,
       error,
-    }),
-    [
-      incomeItemsState.data,
-      incomeRecurringState.data,
-      expenseItemsState.data,
-      expenseRecurringState.data,
-      loading,
-      error,
-    ],
-  )
+    }
+  }, [data, year, loading, error])
 }

@@ -1,12 +1,11 @@
 import { useMemo } from "react"
-import { useFirebaseSync } from "./useFirebaseSync"
-import { familyRootPath, personalRootPath } from "@/lib/paths"
+import { useFirebaseData } from "@/contexts/FirebaseDataContext"
 
 // DB에 기록된 모든 연도 목록 추출 (오래된 순).
 // YearSelect 드롭다운과 Alt+←/→ 연도 이동의 범위를 결정한다.
 export function useAvailableYears(source: "personal" | "family") {
-  const path = source === "personal" ? personalRootPath() : familyRootPath()
-  const { data, loading } = useFirebaseSync<Record<string, unknown>>(path)
+  const firebaseData = useFirebaseData()
+  const { data, loading } = firebaseData[source]
 
   const years = useMemo(() => {
     if (!data) return []

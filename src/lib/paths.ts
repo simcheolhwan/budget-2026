@@ -29,7 +29,3 @@ export const sourcePath = (
 
 // 예산 경로 (BudgetPage)
 export const budgetPath = () => "budget" as const
-
-// 연도 목록 탐색용 루트 경로 (useAvailableYears에서 키 목록을 추출)
-export const personalRootPath = () => "personal" as const
-export const familyRootPath = () => "family" as const

@@ -3,10 +3,8 @@ import { Dialog } from "@base-ui/react/dialog"
 import { ScrollArea } from "@base-ui/react/scroll-area"
 import { IconSearch } from "@tabler/icons-react"
 import styles from "./SearchDialog.module.css"
-import type { YearData } from "@/schemas"
 import type { SearchResult } from "@/lib/search"
-import { useFirebaseSync } from "@/hooks/useFirebaseSync"
-import { familyRootPath, personalRootPath } from "@/lib/paths"
+import { useFirebaseData } from "@/contexts/FirebaseDataContext"
 import { buildSearchIndex, searchItems } from "@/lib/search"
 import { formatNumber } from "@/lib/utils"
 
@@ -59,16 +57,11 @@ function SearchResultRow({ result }: { result: SearchResult }) {
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("")
 
-  const { data: personalData } = useFirebaseSync<Record<string, YearData>>(
-    open ? personalRootPath() : null,
-  )
-  const { data: familyData } = useFirebaseSync<Record<string, YearData>>(
-    open ? familyRootPath() : null,
-  )
+  const { personal, family } = useFirebaseData()
 
   const index = useMemo(
-    () => buildSearchIndex(personalData, familyData),
-    [personalData, familyData],
+    () => buildSearchIndex(personal.data, family.data),
+    [personal.data, family.data],
   )
 
   const results = useMemo(() => searchItems(query, index), [query, index])

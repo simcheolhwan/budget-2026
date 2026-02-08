@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { authReady } from "@/lib/auth"
 import { AppLayout } from "@/components/layout/AppLayout"
+import { FirebaseDataProvider } from "@/contexts/FirebaseDataContext"
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
@@ -11,8 +12,10 @@ export const Route = createFileRoute("/_authenticated")({
     }
   },
   component: () => (
-    <AppLayout>
-      <Outlet />
-    </AppLayout>
+    <FirebaseDataProvider>
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
+    </FirebaseDataProvider>
   ),
 })
