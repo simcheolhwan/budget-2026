@@ -85,7 +85,7 @@ export function getItemSpending(
 }
 
 // 예산 항목명 기준 지출 맵 (카테고리별 사전 계산).
-// BudgetPage에서 사용. 매 항목마다 getItemSpending을 호출하는 대신 O(n)으로 한 번에 집계.
+// BudgetTracker에서 사용. 매 항목마다 getItemSpending을 호출하는 대신 O(n)으로 한 번에 집계.
 export function buildSpendingMap(
   expenseItems: ReadonlyArray<ExpenseItem>,
   expenseRecurring: ReadonlyArray<Recurring>,

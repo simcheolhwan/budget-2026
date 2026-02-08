@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 import { Meter } from "@base-ui/react/meter"
-import styles from "./BudgetPage.module.css"
+import styles from "./BudgetTracker.module.css"
 import type { BudgetGroup, BudgetItem, ExpenseItem, Recurring } from "@/schemas"
 import { NumberCell } from "@/components/shared/NumberCell"
 import {
@@ -35,7 +35,7 @@ const formatMan = (value: number) => {
 }
 
 // 예산 페이지
-export function BudgetPage() {
+export function BudgetTracker() {
   const { data: budget } = useBudget()
   const currentYear = getCurrentYear()
   const data = useYearData("family", currentYear)

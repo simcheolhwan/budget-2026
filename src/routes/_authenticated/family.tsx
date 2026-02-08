@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { BudgetLayout } from "@/components/shared/BudgetLayout"
+import { LedgerLayout } from "@/components/shared/LedgerLayout"
 import { useUIStore } from "@/stores/ui"
 
 export const Route = createFileRoute("/_authenticated/family")({
@@ -10,5 +10,5 @@ export const Route = createFileRoute("/_authenticated/family")({
 })
 
 function FamilyRoute() {
-  return <BudgetLayout source="family" />
+  return <LedgerLayout source="family" />
 }

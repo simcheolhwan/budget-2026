@@ -3,7 +3,7 @@ import { RecurringTable } from "./RecurringTable"
 import { ItemsTable } from "./ItemsTable"
 import { SubTabs } from "./SubTabs"
 import { YearSelect } from "./YearSelect"
-import styles from "./BudgetLayout.module.css"
+import styles from "./LedgerLayout.module.css"
 import type { ExpenseItem, ProjectExpense, Recurring, TransactionItem } from "@/schemas"
 import { useUIStore } from "@/stores/ui"
 import { useSubTabs } from "@/hooks/useSubTabs"
@@ -45,12 +45,12 @@ async function autoAdjustItemAmount(
   await updateItem(path, index, { ...item, amount: item.amount + sign * discrepancy })
 }
 
-interface BudgetLayoutProps {
+interface LedgerLayoutProps {
   source: "personal" | "family"
 }
 
 // 공통 가계부 레이아웃 (반복 테이블 상단 + 수입/지출 좌우)
-export function BudgetLayout({ source }: BudgetLayoutProps) {
+export function LedgerLayout({ source }: LedgerLayoutProps) {
   const viewMode = useUIStore((s) => s.viewMode)
   const year = useUIStore((s) => s.year)
   const setYear = useUIStore((s) => s.setYear)

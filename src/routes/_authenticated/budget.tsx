@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { BudgetPage } from "@/components/family/BudgetPage"
+import { BudgetTracker } from "@/components/budget/BudgetTracker"
 
 export const Route = createFileRoute("/_authenticated/budget")({
-  component: BudgetPage,
+  component: BudgetTracker,
 })

@@ -19,7 +19,7 @@ export const familyPath = (
   sub: "items" | "recurring",
 ) => `family/${year}/${section}/${sub}` as const
 
-// source 기반 통합 경로. BudgetLayout에서 source만으로 경로 계산.
+// source 기반 통합 경로. LedgerLayout에서 source만으로 경로 계산.
 export const sourcePath = (
   source: "personal" | "family",
   year: number,
@@ -27,5 +27,5 @@ export const sourcePath = (
   sub: "items" | "recurring",
 ) => (source === "personal" ? personalPath : familyPath)(year, section, sub)
 
-// 예산 경로 (BudgetPage)
+// 예산 경로 (BudgetTracker)
 export const budgetPath = () => "budget" as const
