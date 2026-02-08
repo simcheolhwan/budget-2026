@@ -47,6 +47,10 @@
 
 /* 오차 기반 자동 조정 버튼. 수입은 +discrepancy, 지출은 -discrepancy를 적용. */
 .autoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
   width: 100%;
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Popover } from "@base-ui/react/popover"
+import { IconClipboard } from "@tabler/icons-react"
 import styles from "./NumberCell.module.css"
 import { formatNumber, parseOperatorInput } from "@/lib/utils"
 
@@ -9,6 +10,7 @@ interface NumberCellProps {
   onUpdate: (newValue: number) => Promise<void>
   onAutoAdjust?: () => Promise<void>
   autoAdjustResult?: number
+  previousMonthValue?: number | null
 }
 
 // 숫자 셀 표시 + Popover 편집
@@ -18,6 +20,7 @@ export function NumberCell({
   onUpdate,
   onAutoAdjust,
   autoAdjustResult,
+  previousMonthValue,
 }: NumberCellProps) {
   const [open, setOpen] = useState(false)
   const [inputValue, setInputValue] = useState("")
@@ -65,6 +68,12 @@ export function NumberCell({
     setOpen(false)
     await onAutoAdjust?.()
   }, [onAutoAdjust])
+
+  const handleCopyPrevMonth = useCallback(async () => {
+    if (previousMonthValue == null) return
+    setOpen(false)
+    await onUpdate(previousMonthValue)
+  }, [previousMonthValue, onUpdate])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -117,6 +126,13 @@ export function NumberCell({
                   {formatNumber(numericValue)} {autoAdjustResult - numericValue > 0 ? "+" : "−"}{" "}
                   {formatNumber(Math.abs(autoAdjustResult - numericValue))} ={" "}
                   {formatNumber(autoAdjustResult)}
+                </button>
+              )}
+
+              {value == null && previousMonthValue != null && previousMonthValue !== 0 && (
+                <button type="button" className={styles.autoButton} onClick={handleCopyPrevMonth}>
+                  <IconClipboard size={14} style={{ opacity: 0.4 }} />{" "}
+                  {formatNumber(previousMonthValue)}
                 </button>
               )}
             </Popover.Popup>

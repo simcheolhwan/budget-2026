@@ -188,6 +188,7 @@ export function RecurringTable({
           <td className={styles.nameCol}>{item.name}</td>
           {MONTHS.map((m) => {
             const monthly = item.monthly?.[String(m)] ?? null
+            const prevMonthly = m > 1 ? (item.monthly?.[String(m - 1)] ?? null) : null
             return (
               <td key={m} className={styles.numCol}>
                 <NumberCell
@@ -198,6 +199,7 @@ export function RecurringTable({
                   autoAdjustResult={
                     (monthly ?? 0) + (type === "income" ? discrepancy : -discrepancy)
                   }
+                  previousMonthValue={prevMonthly}
                 />
               </td>
             )
