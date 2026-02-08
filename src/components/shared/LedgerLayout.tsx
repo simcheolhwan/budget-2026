@@ -12,7 +12,7 @@ import { useSummary } from "@/hooks/useSummary"
 import { useYearData } from "@/hooks/useYearData"
 import { collectCategoriesFromItems } from "@/lib/grouping"
 import { calculateBalance } from "@/lib/calculations"
-import { updateItem, write } from "@/lib/database"
+import { updateSortedItem, write } from "@/lib/database"
 import { getProjectItems, isProjectExpense } from "@/lib/utils"
 import { sourcePath } from "@/lib/paths"
 
@@ -42,7 +42,10 @@ async function autoAdjustItemAmount(
 ) {
   const item = items[index]
   if (isProjectExpense(item)) return
-  await updateItem(path, index, { ...item, amount: item.amount + sign * discrepancy })
+  await updateSortedItem(path, items as Array<TransactionItem | ExpenseItem>, index, {
+    ...item,
+    amount: item.amount + sign * discrepancy,
+  })
 }
 
 interface LedgerLayoutProps {

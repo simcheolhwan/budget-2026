@@ -14,7 +14,7 @@ import type { ReactNode } from "react"
 import type { BaseItem, ExpenseItem, ProjectExpense, ProjectItem, TransactionItem } from "@/schemas"
 import type { ViewMode } from "@/stores/ui"
 import { useUIStore } from "@/stores/ui"
-import { addItem, removeItem, reorderItems, updateItem } from "@/lib/database"
+import { addSortedItem, removeItem, reorderItems, updateSortedItem } from "@/lib/database"
 import { sumAmounts, sumExpenseItems } from "@/lib/calculations"
 import { formatNumber, isProjectExpense } from "@/lib/utils"
 import { useSortableList } from "@/hooks/useSortableList"
@@ -122,35 +122,35 @@ export function ItemsTable({
   // 항목 추가
   const handleAdd = useCallback(
     async (item: TransactionItem | ExpenseItem) => {
-      await addItem(path, item)
+      await addSortedItem(path, items, item)
     },
-    [path],
+    [path, items],
   )
 
   // 항목 수정
   const handleEdit = useCallback(
     async (item: TransactionItem | ExpenseItem) => {
       if (editIndex === null) return
-      await updateItem(path, editIndex, item)
+      await updateSortedItem(path, items, editIndex, item)
     },
-    [path, editIndex],
+    [path, items, editIndex],
   )
 
   // 항목 삭제
   const handleDelete = useCallback(async () => {
     if (deleteIndex === null) return
-    await removeItem(path, deleteIndex)
+    await removeItem(path, items, deleteIndex)
     closeDelete()
-  }, [path, deleteIndex, closeDelete])
+  }, [path, items, deleteIndex, closeDelete])
 
   // 금액 인라인 편집 (일반 항목만)
   const handleUpdateAmount = useCallback(
     async (filteredIndex: number, newValue: number) => {
       const { item, originalIndex } = filtered[filteredIndex]
       const updated = { ...item, amount: newValue }
-      await updateItem(path, originalIndex, updated as TransactionItem | ExpenseItem)
+      await updateSortedItem(path, items, originalIndex, updated as TransactionItem | ExpenseItem)
     },
-    [filtered, path],
+    [filtered, path, items],
   )
 
   // 자동 조정 (filtered → original 인덱스 변환)
@@ -179,7 +179,7 @@ export function ItemsTable({
     async (subItems: Array<ProjectItem>) => {
       if (!projectDetail) return
       const updated = { ...(items[projectDetail.index] as ProjectExpense), items: subItems }
-      await updateItem(path, projectDetail.index, updated)
+      await updateSortedItem(path, items, projectDetail.index, updated)
       setProjectDetail({ ...projectDetail, project: updated })
     },
     [items, path, projectDetail],

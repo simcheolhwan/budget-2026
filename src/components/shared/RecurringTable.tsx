@@ -9,7 +9,7 @@ import { SortableRow } from "./SortableRow"
 import styles from "./RecurringTable.module.css"
 import type { Recurring } from "@/schemas"
 import { useUIStore } from "@/stores/ui"
-import { write } from "@/lib/database"
+import { addItem, removeItem, reorderItems, updateItem } from "@/lib/database"
 import { sumRecurring, sumRecurringByMonth } from "@/lib/calculations"
 import { formatNumber } from "@/lib/utils"
 import { useSortableList } from "@/hooks/useSortableList"
@@ -82,13 +82,12 @@ export function RecurringTable({
   // 월별 셀 값 업데이트
   const handleUpdateMonthly = useCallback(
     async (index: number, month: number, value: number) => {
-      const updated = [...items]
-      const { [String(month)]: _, ...rest } = updated[index].monthly
-      updated[index] = {
-        ...updated[index],
-        monthly: value === 0 ? rest : { ...updated[index].monthly, [String(month)]: value },
+      const { [String(month)]: _, ...rest } = items[index].monthly
+      const updatedItem = {
+        ...items[index],
+        monthly: value === 0 ? rest : { ...items[index].monthly, [String(month)]: value },
       }
-      await write(path, updated)
+      await updateItem(path, items, index, updatedItem)
     },
     [items, path],
   )
@@ -96,7 +95,7 @@ export function RecurringTable({
   // 항목 추가
   const handleAdd = useCallback(
     async (item: Recurring) => {
-      await write(path, sortByCategory([...items, item]))
+      await addItem(path, items, item, sortByCategory)
     },
     [items, path],
   )
@@ -105,9 +104,8 @@ export function RecurringTable({
   const handleEdit = useCallback(
     async (item: Recurring) => {
       if (editIndex === null) return
-      const updated = [...items]
-      updated[editIndex] = { ...updated[editIndex], ...item, monthly: updated[editIndex].monthly }
-      await write(path, sortByCategory(updated))
+      const mergedItem = { ...items[editIndex], ...item, monthly: items[editIndex].monthly }
+      await updateItem(path, items, editIndex, mergedItem, sortByCategory)
     },
     [items, path, editIndex],
   )
@@ -115,15 +113,14 @@ export function RecurringTable({
   // 항목 삭제
   const handleDelete = useCallback(async () => {
     if (deleteIndex === null) return
-    const filtered = items.filter((_, i) => i !== deleteIndex)
-    await write(path, filtered.length > 0 ? filtered : null)
+    await removeItem(path, items, deleteIndex)
     closeDelete()
   }, [items, path, deleteIndex, closeDelete])
 
   // DnD
   const handleReorder = useCallback(
     async (reordered: Array<Recurring>) => {
-      await write(path, reordered)
+      await reorderItems(path, reordered)
     },
     [path],
   )

@@ -7,7 +7,7 @@ import { AddButton } from "./AddButton"
 import { SortableRow } from "./SortableRow"
 import styles from "./BalanceTable.module.css"
 import type { BalanceItem } from "@/schemas"
-import { write } from "@/lib/database"
+import { addItem, removeItem, reorderItems, updateItem } from "@/lib/database"
 import { sumBalanceItems } from "@/lib/calculations"
 import { formatNumber } from "@/lib/utils"
 import { useSortableList } from "@/hooks/useSortableList"
@@ -57,9 +57,8 @@ export function BalanceTable({
   // 잔액 업데이트
   const handleUpdateBalance = useCallback(
     async (index: number, value: number) => {
-      const updated = [...items]
-      updated[index] = { ...updated[index], balance: value }
-      await write(path, updated)
+      const updatedItem = { ...items[index], balance: value }
+      await updateItem(path, items, index, updatedItem)
     },
     [items, path],
   )
@@ -68,12 +67,11 @@ export function BalanceTable({
   const handleAutoAdjust = useCallback(
     async (index: number) => {
       if (autoAdjustSign == null) return
-      const updated = [...items]
-      updated[index] = {
-        ...updated[index],
-        balance: updated[index].balance + autoAdjustSign * discrepancy,
+      const updatedItem = {
+        ...items[index],
+        balance: items[index].balance + autoAdjustSign * discrepancy,
       }
-      await write(path, updated)
+      await updateItem(path, items, index, updatedItem)
     },
     [items, path, discrepancy, autoAdjustSign],
   )
@@ -81,7 +79,7 @@ export function BalanceTable({
   // 항목 추가
   const handleAdd = useCallback(
     async (item: BalanceItem) => {
-      await write(path, [...items, item])
+      await addItem(path, items, item)
     },
     [items, path],
   )
@@ -90,9 +88,7 @@ export function BalanceTable({
   const handleEdit = useCallback(
     async (item: BalanceItem) => {
       if (editIndex === null) return
-      const updated = [...items]
-      updated[editIndex] = item
-      await write(path, updated)
+      await updateItem(path, items, editIndex, item)
     },
     [items, path, editIndex],
   )
@@ -100,15 +96,14 @@ export function BalanceTable({
   // 항목 삭제
   const handleDelete = useCallback(async () => {
     if (deleteIndex === null) return
-    const filtered = items.filter((_, i) => i !== deleteIndex)
-    await write(path, filtered.length > 0 ? filtered : null)
+    await removeItem(path, items, deleteIndex)
     closeDelete()
   }, [items, path, deleteIndex, closeDelete])
 
   // DnD
   const handleReorder = useCallback(
     async (reordered: Array<BalanceItem>) => {
-      await write(path, reordered)
+      await reorderItems(path, reordered)
     },
     [path],
   )
