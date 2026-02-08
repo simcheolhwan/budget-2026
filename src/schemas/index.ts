@@ -36,6 +36,7 @@ export const BalanceItemSchema = z.object({
   category: z.string().optional(),
   name: z.string(),
   balance: z.int(),
+  color: z.string().optional(),
 })
 export type BalanceItem = z.infer<typeof BalanceItemSchema>
 

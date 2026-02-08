@@ -119,7 +119,12 @@ export function BalanceTable({
       const cells = (
         <>
           <td>{item.category}</td>
-          <td data-truncate>{item.name}</td>
+          <td data-truncate>
+            {item.name}
+            {item.color && (
+              <span className={styles.colorChip} style={{ backgroundColor: item.color }} />
+            )}
+          </td>
           <td>
             <NumberCell
               value={item.balance}

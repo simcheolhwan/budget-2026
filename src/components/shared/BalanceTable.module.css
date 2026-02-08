@@ -45,3 +45,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* 색상 칩: 이름 뒤 작은 정사각형 */
+.colorChip {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  vertical-align: 1px;
+  margin-left: 5px;
+}
