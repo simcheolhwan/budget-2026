@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react"
-import { DndContext, closestCenter } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { SortableWrapper } from "./SortableWrapper"
 import { NumberCell } from "./NumberCell"
 import { BalanceFormDialog } from "./BalanceFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
@@ -162,18 +161,17 @@ export function BalanceTable({
 
       {items.length === 0 ? (
         <p data-empty>항목 없음</p>
-      ) : sortVisible && items.length > 1 ? (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={keys} strategy={verticalListSortingStrategy}>
-            <table>
-              <tbody>{renderRows()}</tbody>
-            </table>
-          </SortableContext>
-        </DndContext>
       ) : (
-        <table>
-          <tbody>{renderRows()}</tbody>
-        </table>
+        <SortableWrapper
+          active={sortVisible && items.length > 1}
+          sensors={sensors}
+          keys={keys}
+          onDragEnd={handleDragEnd}
+        >
+          <table>
+            <tbody>{renderRows()}</tbody>
+          </table>
+        </SortableWrapper>
       )}
 
       <BalanceFormDialog

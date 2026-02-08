@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react"
-import { DndContext, closestCenter } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { IconQuestionMark } from "@tabler/icons-react"
+import { SortableWrapper } from "./SortableWrapper"
 import { NumberCell } from "./NumberCell"
 import { RecurringFormDialog } from "./RecurringFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
@@ -230,42 +229,26 @@ export function RecurringTable({
         <AddButton onClick={openAdd} label={`${label} 추가`} />
       </header>
 
-      {(() => {
-        const tableContent = (
-          <table>
-            <thead>
-              <tr>
-                <th className={styles.catCol}>분류</th>
-                <th className={styles.nameCol}>항목</th>
-                {MONTHS.map((m) => (
-                  <th key={m} className={styles.numCol}>
-                    {m}월
-                  </th>
-                ))}
-                <th className={styles.numCol}>{formatNumber(total)}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {showTotalRow && renderTotalRow()}
-              {renderRows()}
-            </tbody>
-          </table>
-        )
-
-        return sortVisible ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={keys} strategy={verticalListSortingStrategy}>
-              {tableContent}
-            </SortableContext>
-          </DndContext>
-        ) : (
-          tableContent
-        )
-      })()}
+      <SortableWrapper active={sortVisible} sensors={sensors} keys={keys} onDragEnd={handleDragEnd}>
+        <table>
+          <thead>
+            <tr>
+              <th className={styles.catCol}>분류</th>
+              <th className={styles.nameCol}>항목</th>
+              {MONTHS.map((m) => (
+                <th key={m} className={styles.numCol}>
+                  {m}월
+                </th>
+              ))}
+              <th className={styles.numCol}>{formatNumber(total)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {showTotalRow && renderTotalRow()}
+            {renderRows()}
+          </tbody>
+        </table>
+      </SortableWrapper>
 
       <RecurringFormDialog
         open={showAdd}

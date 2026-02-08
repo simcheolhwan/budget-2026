@@ -4,7 +4,7 @@ import { ItemsTable } from "./ItemsTable"
 import { SubTabs } from "./SubTabs"
 import { YearSelect } from "./YearSelect"
 import styles from "./BudgetLayout.module.css"
-import type { ExpenseItem, ProjectExpense, TransactionItem } from "@/schemas"
+import type { ExpenseItem, ProjectExpense, Recurring, TransactionItem } from "@/schemas"
 import { useUIStore } from "@/stores/ui"
 import { useSubTabs } from "@/hooks/useSubTabs"
 import { useAvailableYears } from "@/hooks/useAvailableYears"
@@ -15,6 +15,35 @@ import { calculateBalance } from "@/lib/calculations"
 import { updateItem, write } from "@/lib/database"
 import { getProjectItems, isProjectExpense } from "@/lib/utils"
 import { sourcePath } from "@/lib/paths"
+
+async function autoAdjustRecurringMonth(
+  items: Array<Recurring>,
+  path: string,
+  discrepancy: number,
+  index: number,
+  month: number,
+  sign: 1 | -1,
+) {
+  const updated = [...items]
+  const current = updated[index].monthly[String(month)] ?? 0
+  updated[index] = {
+    ...updated[index],
+    monthly: { ...updated[index].monthly, [String(month)]: current + sign * discrepancy },
+  }
+  await write(path, updated)
+}
+
+async function autoAdjustItemAmount(
+  items: ReadonlyArray<TransactionItem | ExpenseItem>,
+  path: string,
+  discrepancy: number,
+  index: number,
+  sign: 1 | -1,
+) {
+  const item = items[index]
+  if (isProjectExpense(item)) return
+  await updateItem(path, index, { ...item, amount: item.amount + sign * discrepancy })
+}
 
 interface BudgetLayoutProps {
   source: "personal" | "family"
@@ -67,48 +96,36 @@ export function BudgetLayout({ source }: BudgetLayoutProps) {
 
   // 반복 수입 자동 조정: value + discrepancy
   const handleAutoAdjustIncomeRecurring = useCallback(
-    async (index: number, month: number) => {
-      const updated = [...incomeRecurring]
-      const current = updated[index].monthly[String(month)] ?? 0
-      updated[index] = {
-        ...updated[index],
-        monthly: { ...updated[index].monthly, [String(month)]: current + discrepancy },
-      }
-      await write(incomeRecurringPath, updated)
-    },
+    (index: number, month: number) =>
+      autoAdjustRecurringMonth(incomeRecurring, incomeRecurringPath, discrepancy, index, month, 1),
     [incomeRecurring, incomeRecurringPath, discrepancy],
   )
 
   // 반복 지출 자동 조정: value - discrepancy
   const handleAutoAdjustExpenseRecurring = useCallback(
-    async (index: number, month: number) => {
-      const updated = [...expenseRecurring]
-      const current = updated[index].monthly[String(month)] ?? 0
-      updated[index] = {
-        ...updated[index],
-        monthly: { ...updated[index].monthly, [String(month)]: current - discrepancy },
-      }
-      await write(expenseRecurringPath, updated)
-    },
+    (index: number, month: number) =>
+      autoAdjustRecurringMonth(
+        expenseRecurring,
+        expenseRecurringPath,
+        discrepancy,
+        index,
+        month,
+        -1,
+      ),
     [expenseRecurring, expenseRecurringPath, discrepancy],
   )
 
   // 일반 수입 자동 조정: value + discrepancy
   const handleAutoAdjustIncomeItem = useCallback(
-    async (originalIndex: number) => {
-      const item = incomeItems[originalIndex]
-      await updateItem(incomePath, originalIndex, { ...item, amount: item.amount + discrepancy })
-    },
+    (originalIndex: number) =>
+      autoAdjustItemAmount(incomeItems, incomePath, discrepancy, originalIndex, 1),
     [incomeItems, incomePath, discrepancy],
   )
 
   // 일반 지출 자동 조정: value - discrepancy
   const handleAutoAdjustExpenseItem = useCallback(
-    async (originalIndex: number) => {
-      const item = expenseItems[originalIndex]
-      if (isProjectExpense(item)) return
-      await updateItem(expensePath, originalIndex, { ...item, amount: item.amount - discrepancy })
-    },
+    (originalIndex: number) =>
+      autoAdjustItemAmount(expenseItems, expensePath, discrepancy, originalIndex, -1),
     [expenseItems, expensePath, discrepancy],
   )
 

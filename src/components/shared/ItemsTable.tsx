@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
-import { DndContext, closestCenter } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { IconQuestionMark } from "@tabler/icons-react"
+import { SortableWrapper } from "./SortableWrapper"
 import { ItemFormDialog } from "./ItemFormDialog"
 import { ExpenseFormDialog } from "./ExpenseFormDialog"
 import { ConfirmDialog } from "./ConfirmDialog"
@@ -215,40 +214,25 @@ export function ItemsTable({
 
       {filtered.length === 0 ? (
         <p data-empty>항목 없음</p>
-      ) : showSort ? (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={keys} strategy={verticalListSortingStrategy}>
-            <table>
-              <thead>
-                <tr>
-                  <th className={styles.monthCol}>월</th>
-                  <th className={styles.catCol}>분류</th>
-                  <th>항목</th>
-                  <th>메모</th>
-                  <th>{formatNumber(total)}</th>
-                </tr>
-              </thead>
-              <tbody>{renderTableRows()}</tbody>
-            </table>
-          </SortableContext>
-        </DndContext>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              {!(viewMode === "monthly" && activeTab !== null) && (
-                <th className={styles.monthCol}>월</th>
-              )}
-              {!(viewMode === "category" && activeTab !== null) && (
-                <th className={styles.catCol}>분류</th>
-              )}
-              <th>항목</th>
-              <th>메모</th>
-              <th>{formatNumber(total)}</th>
-            </tr>
-          </thead>
-          <tbody>{renderTableRows()}</tbody>
-        </table>
+        <SortableWrapper active={showSort} sensors={sensors} keys={keys} onDragEnd={handleDragEnd}>
+          <table>
+            <thead>
+              <tr>
+                {(showSort || !(viewMode === "monthly" && activeTab !== null)) && (
+                  <th className={styles.monthCol}>월</th>
+                )}
+                {(showSort || !(viewMode === "category" && activeTab !== null)) && (
+                  <th className={styles.catCol}>분류</th>
+                )}
+                <th>항목</th>
+                <th>메모</th>
+                <th>{formatNumber(total)}</th>
+              </tr>
+            </thead>
+            <tbody>{renderTableRows()}</tbody>
+          </table>
+        </SortableWrapper>
       )}
 
       {renderFormDialog()}
