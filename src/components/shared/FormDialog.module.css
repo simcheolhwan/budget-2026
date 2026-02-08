@@ -94,6 +94,7 @@
 }
 
 .cancelButton {
+  order: 2;
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -112,6 +113,7 @@
 }
 
 .submitButton {
+  order: 3;
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -126,6 +128,7 @@
 }
 
 .deleteButton {
+  order: 1;
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
   font-weight: 500;

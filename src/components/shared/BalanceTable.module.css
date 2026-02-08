@@ -39,6 +39,11 @@
   width: 4em;
 }
 
+/* 잔액(마지막 컬럼) 폭 제한 */
+.section td:last-child {
+  width: 6em;
+}
+
 /* 이름(두번째 컬럼) 말줄임 */
 .section td:nth-child(2) {
   overflow: hidden;

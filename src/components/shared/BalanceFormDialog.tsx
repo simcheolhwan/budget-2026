@@ -183,6 +183,16 @@ export function BalanceFormDialog({
             </div>
 
             <footer className={formStyles.footer}>
+              <button type="submit" className={formStyles.submitButton}>
+                저장
+              </button>
+              <Dialog.Close
+                render={
+                  <button type="button" className={formStyles.cancelButton}>
+                    취소
+                  </button>
+                }
+              />
               {mode === "edit" && onDelete && (
                 <button
                   type="button"
@@ -193,16 +203,6 @@ export function BalanceFormDialog({
                   삭제
                 </button>
               )}
-              <Dialog.Close
-                render={
-                  <button type="button" className={formStyles.cancelButton}>
-                    취소
-                  </button>
-                }
-              />
-              <button type="submit" className={formStyles.submitButton}>
-                저장
-              </button>
             </footer>
           </form>
         </Dialog.Popup>
