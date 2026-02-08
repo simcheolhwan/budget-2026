@@ -324,6 +324,10 @@ tfoot td {
   background-color: var(--bg-hover);
 }
 
+[data-number-cell][data-blank] {
+  color: var(--text-tertiary);
+}
+
 /* --- 메모 컬럼 옅은 색상 --- */
 [data-memo] {
   color: var(--text-secondary);

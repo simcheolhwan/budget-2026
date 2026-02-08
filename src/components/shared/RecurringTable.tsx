@@ -186,20 +186,22 @@ export function RecurringTable({
             </td>
           )}
           <td className={styles.nameCol}>{item.name}</td>
-          {MONTHS.map((m) => (
-            <td key={m} className={styles.numCol}>
-              <NumberCell
-                value={item.monthly?.[String(m)] ?? 0}
-                discrepancy={discrepancy}
-                onUpdate={(v) => handleUpdateMonthly(originalIndex, m, v)}
-                onAutoAdjust={onAutoAdjust ? () => onAutoAdjust(originalIndex, m) : undefined}
-                autoAdjustResult={
-                  (item.monthly?.[String(m)] ?? 0) +
-                  (type === "income" ? discrepancy : -discrepancy)
-                }
-              />
-            </td>
-          ))}
+          {MONTHS.map((m) => {
+            const monthly = item.monthly?.[String(m)] ?? null
+            return (
+              <td key={m} className={styles.numCol}>
+                <NumberCell
+                  value={monthly}
+                  discrepancy={discrepancy}
+                  onUpdate={(v) => handleUpdateMonthly(originalIndex, m, v)}
+                  onAutoAdjust={onAutoAdjust ? () => onAutoAdjust(originalIndex, m) : undefined}
+                  autoAdjustResult={
+                    (monthly ?? 0) + (type === "income" ? discrepancy : -discrepancy)
+                  }
+                />
+              </td>
+            )
+          })}
           <td className={styles.numCol}>{formatNumber(rowTotal(item))}</td>
         </>
       )

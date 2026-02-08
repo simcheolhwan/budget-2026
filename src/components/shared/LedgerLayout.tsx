@@ -26,9 +26,11 @@ async function autoAdjustRecurringMonth(
 ) {
   const updated = [...items]
   const current = updated[index].monthly?.[String(month)] ?? 0
+  const newValue = current + sign * discrepancy
+  const { [String(month)]: _, ...rest } = updated[index].monthly ?? {}
   updated[index] = {
     ...updated[index],
-    monthly: { ...updated[index].monthly, [String(month)]: current + sign * discrepancy },
+    monthly: newValue === 0 ? rest : { ...updated[index].monthly, [String(month)]: newValue },
   }
   await write(path, updated)
 }

@@ -4,7 +4,7 @@ import styles from "./NumberCell.module.css"
 import { formatNumber, parseOperatorInput } from "@/lib/utils"
 
 interface NumberCellProps {
-  value: number
+  value: number | null
   discrepancy: number
   onUpdate: (newValue: number) => Promise<void>
   onAutoAdjust?: () => Promise<void>
@@ -32,6 +32,8 @@ export function NumberCell({
     }
   }, [open])
 
+  const numericValue = value ?? 0
+
   // +/- 연산 미리보기
   const preview = useMemo(() => {
     const trimmed = inputValue.trim()
@@ -39,8 +41,8 @@ export function NumberCell({
     if (!trimmed.startsWith("+") && !trimmed.startsWith("-")) return null
     const delta = Number(trimmed)
     if (Number.isNaN(delta)) return null
-    return value + delta
-  }, [inputValue, value])
+    return numericValue + delta
+  }, [inputValue, numericValue])
 
   const handleSubmit = useCallback(async () => {
     const trimmed = inputValue.trim()
@@ -49,7 +51,7 @@ export function NumberCell({
       return
     }
 
-    const newValue = parseOperatorInput(trimmed, value)
+    const newValue = parseOperatorInput(trimmed, numericValue)
     if (newValue === null) {
       setOpen(false)
       return
@@ -57,7 +59,7 @@ export function NumberCell({
 
     setOpen(false)
     await onUpdate(newValue)
-  }, [inputValue, value, onUpdate])
+  }, [inputValue, numericValue, onUpdate])
 
   const handleAutoAdjust = useCallback(async () => {
     setOpen(false)
@@ -84,8 +86,9 @@ export function NumberCell({
           nativeButton={false}
           data-number-cell
           aria-label="금액 편집"
+          data-blank={value === null || undefined}
         >
-          {formatNumber(value)}
+          {value === null ? "–" : formatNumber(value)}
         </Popover.Trigger>
         <Popover.Portal>
           <Popover.Positioner side="bottom" align="end">
@@ -96,7 +99,7 @@ export function NumberCell({
                 inputMode="numeric"
                 className={styles.input}
                 value={inputValue}
-                placeholder={formatNumber(value)}
+                placeholder={formatNumber(numericValue)}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 aria-label="새 금액"
@@ -104,15 +107,15 @@ export function NumberCell({
 
               {preview !== null && (
                 <div className={styles.preview}>
-                  {formatNumber(value)} {inputValue.trim().startsWith("-") ? "−" : "+"}{" "}
-                  {formatNumber(Math.abs(preview - value))} = {formatNumber(preview)}
+                  {formatNumber(numericValue)} {inputValue.trim().startsWith("-") ? "−" : "+"}{" "}
+                  {formatNumber(Math.abs(preview - numericValue))} = {formatNumber(preview)}
                 </div>
               )}
 
               {onAutoAdjust && discrepancy !== 0 && autoAdjustResult != null && (
                 <button type="button" className={styles.autoButton} onClick={handleAutoAdjust}>
-                  {formatNumber(value)} {autoAdjustResult - value > 0 ? "+" : "−"}{" "}
-                  {formatNumber(Math.abs(autoAdjustResult - value))} ={" "}
+                  {formatNumber(numericValue)} {autoAdjustResult - numericValue > 0 ? "+" : "−"}{" "}
+                  {formatNumber(Math.abs(autoAdjustResult - numericValue))} ={" "}
                   {formatNumber(autoAdjustResult)}
                 </button>
               )}
