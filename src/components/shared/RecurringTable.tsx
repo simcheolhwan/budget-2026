@@ -27,7 +27,7 @@ interface RecurringTableProps {
 }
 
 // 반복 항목의 행 합계
-const rowTotal = (r: Recurring) => Object.values(r.monthly).reduce((sum, v) => sum + v, 0)
+const rowTotal = (r: Recurring) => Object.values(r.monthly ?? {}).reduce((sum, v) => sum + v, 0)
 
 // rowSpan 계산: 동일 category 연속 행 그룹
 function computeRowSpans(items: Array<Recurring>): Map<number, number> {
@@ -82,7 +82,7 @@ export function RecurringTable({
   // 월별 셀 값 업데이트
   const handleUpdateMonthly = useCallback(
     async (index: number, month: number, value: number) => {
-      const { [String(month)]: _, ...rest } = items[index].monthly
+      const { [String(month)]: _, ...rest } = items[index].monthly ?? {}
       const updatedItem = {
         ...items[index],
         monthly: value === 0 ? rest : { ...items[index].monthly, [String(month)]: value },
@@ -104,7 +104,7 @@ export function RecurringTable({
   const handleEdit = useCallback(
     async (item: Recurring) => {
       if (editIndex === null) return
-      const mergedItem = { ...items[editIndex], ...item, monthly: items[editIndex].monthly }
+      const mergedItem = { ...items[editIndex], ...item, monthly: items[editIndex].monthly ?? {} }
       await updateItem(path, items, editIndex, mergedItem, sortByCategory)
     },
     [items, path, editIndex],
@@ -189,12 +189,13 @@ export function RecurringTable({
           {MONTHS.map((m) => (
             <td key={m} className={styles.numCol}>
               <NumberCell
-                value={item.monthly[String(m)] ?? 0}
+                value={item.monthly?.[String(m)] ?? 0}
                 discrepancy={discrepancy}
                 onUpdate={(v) => handleUpdateMonthly(originalIndex, m, v)}
                 onAutoAdjust={onAutoAdjust ? () => onAutoAdjust(originalIndex, m) : undefined}
                 autoAdjustResult={
-                  (item.monthly[String(m)] ?? 0) + (type === "income" ? discrepancy : -discrepancy)
+                  (item.monthly?.[String(m)] ?? 0) +
+                  (type === "income" ? discrepancy : -discrepancy)
                 }
               />
             </td>

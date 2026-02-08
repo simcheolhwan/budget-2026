@@ -46,7 +46,7 @@ export type BalanceItem = z.infer<typeof BalanceItemSchema>
 export const RecurringSchema = z.object({
   category: z.string().optional(),
   name: z.string().optional(),
-  monthly: z.record(z.string(), z.int()),
+  monthly: z.record(z.string(), z.int()).optional(),
 })
 export type Recurring = z.infer<typeof RecurringSchema>
 

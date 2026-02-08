@@ -44,7 +44,7 @@ describe("BalanceItemSchema", () => {
 describe("RecurringSchema", () => {
   it("정수 monthly 값을 허용한다", () => {
     const result = RecurringSchema.parse({ monthly: { "1": 100, "2": 200 } })
-    expect(result.monthly["1"]).toBe(100)
+    expect(result.monthly!["1"]).toBe(100)
   })
 
   it("소수점 monthly 값을 거부한다", () => {

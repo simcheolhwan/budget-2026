@@ -19,11 +19,11 @@ export const sumExpenseItems = (items: ReadonlyArray<ExpenseItem>): number =>
 
 // 반복 항목 합계 (모든 월 금액 합산)
 export const sumRecurring = (recurring: ReadonlyArray<Recurring>): number =>
-  recurring.reduce((sum, r) => sum + Object.values(r.monthly).reduce((s, v) => s + v, 0), 0)
+  recurring.reduce((sum, r) => sum + Object.values(r.monthly ?? {}).reduce((s, v) => s + v, 0), 0)
 
 // 특정 월의 반복 합계
 export const sumRecurringByMonth = (recurring: ReadonlyArray<Recurring>, month: number): number =>
-  recurring.reduce((sum, r) => sum + (r.monthly[String(month)] ?? 0), 0)
+  recurring.reduce((sum, r) => sum + (r.monthly?.[String(month)] ?? 0), 0)
 
 // 잔액 항목 합계
 export const sumBalanceItems = (items: ReadonlyArray<BalanceItem>): number =>
@@ -79,7 +79,7 @@ export function getItemSpending(
 
   const recurringSpending = expenseRecurring
     .filter((r) => r.name === budgetItemName)
-    .reduce((sum, r) => sum + Object.values(r.monthly).reduce((s, v) => s + v, 0), 0)
+    .reduce((sum, r) => sum + Object.values(r.monthly ?? {}).reduce((s, v) => s + v, 0), 0)
 
   return itemSpending + recurringSpending
 }
@@ -104,7 +104,7 @@ export function buildSpendingMap(
   for (const r of expenseRecurring) {
     const key = r.name
     if (!key) continue
-    const amount = Object.values(r.monthly).reduce((s, v) => s + v, 0)
+    const amount = Object.values(r.monthly ?? {}).reduce((s, v) => s + v, 0)
     map.set(key, (map.get(key) ?? 0) + amount)
   }
 
