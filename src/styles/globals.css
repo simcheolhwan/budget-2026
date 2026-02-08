@@ -267,6 +267,8 @@ tfoot td {
   font-size: var(--text-sm);
   padding: var(--space-6) var(--space-4);
   text-align: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
 }
 
 /* --- 로딩/에러 상태 --- */
