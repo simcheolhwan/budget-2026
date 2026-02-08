@@ -81,6 +81,26 @@
   border-color: var(--primary);
 }
 
+.textarea {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.textarea:focus {
+  border-color: var(--primary);
+}
+
+.textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
 .error {
   font-size: var(--text-xs);
   color: var(--expense-text);

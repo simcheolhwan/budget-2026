@@ -47,6 +47,7 @@ export function BalanceFormDialog({
         category: "",
         name: "",
         balance: 0,
+        memo: "",
         ...defaultValues,
       },
     })
@@ -72,6 +73,7 @@ export function BalanceFormDialog({
         category: "",
         name: "",
         balance: 0,
+        memo: "",
         ...defaultValues,
       })
     }
@@ -80,9 +82,10 @@ export function BalanceFormDialog({
   const handleFormSubmit = handleSubmit(async (data) => {
     const color = data.color ? normalizeHex(data.color) : undefined
     if (color && !HEX_RE.test(color)) return
-    // Firebase RTDB는 undefined를 허용하지 않으므로 color 키 자체를 제거
-    const { color: _, ...rest } = data
-    const cleaned = color ? { ...rest, color } : rest
+    const memo = data.memo?.trim() || undefined
+    // Firebase RTDB는 undefined를 허용하지 않으므로 optional 키 자체를 제거
+    const { color: _, memo: __, ...rest } = data
+    const cleaned = { ...rest, ...(color && { color }), ...(memo && { memo }) }
     try {
       await onSubmit(cleaned as BalanceItem)
       onClose()
@@ -150,6 +153,19 @@ export function BalanceFormDialog({
                   {formState.errors.balance.message}
                 </span>
               )}
+            </div>
+
+            <div className={formStyles.field}>
+              <label htmlFor="balance-memo" className={formStyles.label}>
+                메모
+              </label>
+              <textarea
+                id="balance-memo"
+                className={formStyles.textarea}
+                {...register("memo")}
+                rows={4}
+                placeholder="메모…"
+              />
             </div>
 
             <div className={formStyles.field}>
