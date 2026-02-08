@@ -41,10 +41,10 @@ pnpm dev
 src/
 ├── routes/          # TanStack Router 파일 기반 라우팅
 ├── components/      # React 컴포넌트
+│   ├── budget/      # 예산 분석
 │   ├── layout/      # 레이아웃 (헤더, 사이드바, 드로어)
-│   ├── personal/    # 개인 가계부
-│   ├── family/      # 가족 가계부, 예산 분석
 │   └── shared/      # 공용 컴포넌트 (테이블, 폼, 다이얼로그)
+├── contexts/        # React Context (Firebase 데이터 구독)
 ├── hooks/           # 커스텀 훅 (Firebase 동기화, CRUD, DnD)
 ├── lib/             # 유틸리티, Firebase, 계산 로직
 ├── schemas/         # Zod 스키마 (데이터 모델)

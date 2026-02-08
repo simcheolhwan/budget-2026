@@ -35,7 +35,7 @@
 - 폼: React Hook Form + Zod + Base UI Dialog
 - 상태: Zustand (UI 상태), Firebase (데이터)
 - 테이블 숫자 셀: 오차 기반 편집 모드 (자동/편집 메뉴)
-- 정렬: 저장 시 month 기준 자동 정렬 (`addSortedItem`/`updateSortedItem`)
+- 정렬: 저장 시 month 오름차순, 같은 월 내 category 가나다순 자동 정렬 (`addSortedItem`/`updateSortedItem`)
 - DnD 순서 변경: dnd-kit (`useSortableList` → `reorderItems`)
 - 검색: `⌘K` 전체 검색 (`buildSearchIndex` → `searchItems`)
 - 키보드 단축키: `Alt+1/2/3` 라우트, `Alt+←/→` 연도 이동
