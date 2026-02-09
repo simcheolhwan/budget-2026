@@ -46,9 +46,7 @@ export function ProjectItemFormDialog({
   }, [open, defaultValues, reset])
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    const trimmed = data.memo?.trim()
-    const { memo: _, ...rest } = data
-    await onSubmit(trimmed ? { ...rest, memo: trimmed } : rest)
+    await onSubmit(data)
     onClose()
   })
 

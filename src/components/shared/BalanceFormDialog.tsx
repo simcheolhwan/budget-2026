@@ -82,12 +82,8 @@ export function BalanceFormDialog({
   const handleFormSubmit = handleSubmit(async (data) => {
     const color = data.color ? normalizeHex(data.color) : undefined
     if (color && !HEX_RE.test(color)) return
-    const memo = data.memo?.trim() || undefined
-    // Firebase RTDB는 undefined를 허용하지 않으므로 optional 키 자체를 제거
-    const { color: _, memo: __, ...rest } = data
-    const cleaned = { ...rest, ...(color && { color }), ...(memo && { memo }) }
     try {
-      await onSubmit(cleaned as BalanceItem)
+      await onSubmit({ ...data, color })
       onClose()
     } catch {
       // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)

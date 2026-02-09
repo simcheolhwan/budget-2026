@@ -54,11 +54,8 @@ export function ItemFormDialog({
   }, [open, mode, defaultValues, reset])
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    const cleaned = Object.fromEntries(
-      Object.entries(data).map(([k, v]) => [k, v === "" ? undefined : v]),
-    ) as TransactionItem
     try {
-      await onSubmit(cleaned)
+      await onSubmit(data)
       onClose()
     } catch {
       // 다이얼로그 유지 (Firebase 에러 시 자동 재시도됨)

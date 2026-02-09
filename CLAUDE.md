@@ -44,6 +44,7 @@
 ## Gotchas
 
 - Firebase RTDB는 빈 배열(`[]`)을 자동 삭제함 → `removeItem`은 빈 배열 대신 `null` 저장, `isProjectExpense`는 `items` 부재도 처리
-- Firebase는 `undefined` 값을 허용하지 않음 → `stripUndefined` 적용
+- Firebase는 `undefined` 값을 허용하지 않음 → `cleanForFirebase` 적용
+- optional 문자열 필드 정규화는 `cleanForFirebase`가 일괄 처리 (trim + 빈 문자열 제거 + 재귀) → 폼에서 수동 정규화 불필요
 - `addSortedItem`/`updateSortedItem`은 저장 전 `sortByMonth` 자동 정렬, DnD는 `reorderItems`로 정렬 없이 저장
 - 렌더 중 Zustand 스토어 변경 금지 → `useEffect`로 지연 처리

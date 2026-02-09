@@ -69,33 +69,17 @@ export function ExpenseFormDialog({
   }, [open, mode, defaultValues, isExistingProject, reset])
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    const { isProject: isProjectChecked, ...rest } = data
-    const cleaned = Object.fromEntries(
-      Object.entries(rest).map(([k, v]) => [k, v === "" ? undefined : v]),
-    ) as Record<string, unknown>
+    const { isProject: isProjectChecked, amount, ...fields } = data
 
-    let item: ExpenseItem
-    if (isProjectChecked) {
-      // 프로젝트 지출: amount 제거, items 빈 배열
-      item = {
-        category: cleaned.category as string | undefined,
-        month: cleaned.month as number | undefined,
-        name: cleaned.name as string | undefined,
-        memo: cleaned.memo as string | undefined,
-        items:
-          isExistingProject && defaultValues && "items" in defaultValues
-            ? (defaultValues as { items: Array<ProjectItem> }).items
-            : [],
-      }
-    } else {
-      item = {
-        category: cleaned.category as string | undefined,
-        month: cleaned.month as number | undefined,
-        name: cleaned.name as string | undefined,
-        memo: cleaned.memo as string | undefined,
-        amount: cleaned.amount as number,
-      }
-    }
+    const item: ExpenseItem = isProjectChecked
+      ? {
+          ...fields,
+          items:
+            isExistingProject && defaultValues && "items" in defaultValues
+              ? (defaultValues as { items: Array<ProjectItem> }).items
+              : [],
+        }
+      : { ...fields, amount }
 
     try {
       await onSubmit(item)

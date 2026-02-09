@@ -5,9 +5,31 @@ import { ref, set } from "firebase/database"
 import { db } from "./firebase"
 import { sortByMonth } from "./utils"
 
-// undefined 값을 가진 필드 제거 (Firebase는 undefined를 허용하지 않음)
-const stripUndefined = <T extends Record<string, unknown>>(obj: T): T =>
-  Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T
+// Firebase RTDB 저장 전 정규화:
+// - 문자열 trim, 빈 문자열 → undefined 변환, undefined 키 제거
+// - 배열 내 객체 재귀 처리 (e.g. ProjectExpense.items)
+const cleanForFirebase = <T extends Record<string, unknown>>(obj: T): T =>
+  Object.fromEntries(
+    Object.entries(obj)
+      .map(([k, v]): [string, unknown] => {
+        if (typeof v === "string") {
+          const trimmed = v.trim()
+          return [k, trimmed || undefined]
+        }
+        if (Array.isArray(v)) {
+          return [
+            k,
+            v.map((item) =>
+              item !== null && typeof item === "object" && !Array.isArray(item)
+                ? cleanForFirebase(item as Record<string, unknown>)
+                : item,
+            ),
+          ]
+        }
+        return [k, v]
+      })
+      .filter(([, v]) => v !== undefined),
+  ) as T
 
 // --- 단일 값 연산 ---
 
@@ -24,7 +46,7 @@ export const addItem = async <T extends Record<string, unknown>>(
   item: T,
   sortFn?: (items: Array<T>) => Array<T>,
 ): Promise<void> => {
-  const next = [...items, stripUndefined(item)]
+  const next = [...items, cleanForFirebase(item)]
   await write(path, sortFn ? sortFn(next) : next)
 }
 
@@ -36,7 +58,7 @@ export const updateItem = async <T extends Record<string, unknown>>(
   item: T,
   sortFn?: (items: Array<T>) => Array<T>,
 ): Promise<void> => {
-  const next = items.map((v, i) => (i === index ? stripUndefined(item) : v))
+  const next = items.map((v, i) => (i === index ? cleanForFirebase(item) : v))
   await write(path, sortFn ? sortFn(next) : next)
 }
 
