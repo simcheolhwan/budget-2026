@@ -1,0 +1,72 @@
+/* 프로젝트 페이지. 좌우 분리 레이아웃. */
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* 2컬럼 섹션 (개인 + 가족) */
+.columnsSection {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.columnTitle {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* 연도 컬럼 — 고정폭 */
+.yearCol {
+  width: 4em;
+}
+
+/* 분류 컬럼 — 고정폭 */
+.catCol {
+  width: 6em;
+}
+
+/* 연도 rowSpan 셀 */
+.yearCell {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+/* rowSpan 패딩 보정: 연도 셀 없는 행의 첫 td에 왼쪽 패딩 부여 */
+.column table tr > td:first-child:not([rowspan]) {
+  padding-left: calc(var(--space-3) / 2);
+}
+
+/* 셀 줄바꿈 방지 */
+.column table td {
+  white-space: nowrap;
+}
+
+/* 미지정 분류 플레이스홀더 */
+.column table td[data-placeholder] {
+  color: var(--text-tertiary);
+}
+
+/* 메모 컬럼 말줄임 */
+.column table td[data-memo] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+@media (max-width: 768px) {
+  .columnsSection {
+    flex-direction: column;
+  }
+}
