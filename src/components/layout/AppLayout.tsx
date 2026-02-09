@@ -6,6 +6,7 @@ import { SidebarDrawer } from "./SidebarDrawer"
 import styles from "./AppLayout.module.css"
 import type { ReactNode } from "react"
 import { SearchDialog } from "@/components/shared/SearchDialog"
+import { ShortcutHelpDialog } from "@/components/shared/ShortcutHelpDialog"
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 import { useUIStore } from "@/stores/ui"
 import { useAvailableYears } from "@/hooks/useAvailableYears"
@@ -20,6 +21,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { pathname } = useLocation()
   const [searchOpen, setSearchOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
 
   // 연도 이동: 개인/가족 페이지에서만 동작
   const source = pathname === "/family" ? "family" : "personal"
@@ -32,6 +34,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   const closeSearch = useCallback(() => setSearchOpen(false), [])
   const openSidebar = useCallback(() => setSidebarOpen(true), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const openHelp = useCallback(() => setHelpOpen(true), [])
+  const closeHelp = useCallback(() => setHelpOpen(false), [])
   const handleNavigate = useCallback((to: string) => navigate({ to }), [navigate])
 
   const handleYearNavigate = useCallback(
@@ -55,6 +59,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     onNavigate: handleNavigate,
     onYearNavigate: handleYearNavigate,
     onAddExpense: handleAddExpense,
+    onHelp: openHelp,
   })
 
   return (
@@ -71,6 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       <SidebarDrawer open={sidebarOpen} onClose={closeSidebar} />
       <SearchDialog open={searchOpen} onClose={closeSearch} />
+      <ShortcutHelpDialog open={helpOpen} onClose={closeHelp} />
     </div>
   )
 }

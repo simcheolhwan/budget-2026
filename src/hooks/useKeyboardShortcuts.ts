@@ -5,6 +5,7 @@ interface KeyboardShortcutHandlers {
   onNavigate: (to: string) => void
   onYearNavigate?: (direction: -1 | 1) => void
   onAddExpense?: () => void
+  onHelp?: () => void
 }
 
 // 전역 키보드 단축키 (⌘K, Alt+1/2/3, Alt+←/→, Alt+N)
@@ -13,6 +14,7 @@ export function useKeyboardShortcuts({
   onNavigate,
   onYearNavigate,
   onAddExpense,
+  onHelp,
 }: KeyboardShortcutHandlers) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -25,8 +27,13 @@ export function useKeyboardShortcuts({
 
       // Alt+키
       if (e.altKey) {
-        // Alt+1/2/3 라우트 탐색
-        const routes: Record<string, string> = { Digit1: "/", Digit2: "/family", Digit3: "/budget" }
+        // Alt+1/2/3 라우트 탐색 + Alt+P
+        const routes: Record<string, string> = {
+          Digit1: "/",
+          Digit2: "/family",
+          Digit3: "/budget",
+          KeyP: "/projects",
+        }
         const to = routes[e.code]
         if (to) {
           e.preventDefault()
@@ -55,9 +62,18 @@ export function useKeyboardShortcuts({
           }
         }
       }
+
+      // ? 도움말 (modifier 없이, 입력 필드 외부에서만)
+      if (e.key === "?" && !e.altKey && !e.metaKey && !e.ctrlKey && onHelp) {
+        const tag = (e.target as HTMLElement).tagName
+        if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") {
+          e.preventDefault()
+          onHelp()
+        }
+      }
     }
 
     document.addEventListener("keydown", handler)
     return () => document.removeEventListener("keydown", handler)
-  }, [onSearch, onNavigate, onYearNavigate, onAddExpense])
+  }, [onSearch, onNavigate, onYearNavigate, onAddExpense, onHelp])
 }

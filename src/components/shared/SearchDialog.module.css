@@ -15,7 +15,7 @@
   z-index: 51;
   width: min(90vw, 560px);
   max-height: 480px;
-  background-color: var(--bg-elevated);
+  background-color: var(--bg-dialog);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-popup);
