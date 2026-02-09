@@ -355,12 +355,16 @@ export function ItemsTable({
 
   // 추가 다이얼로그 렌더링
   function renderFormDialog() {
+    // 분류별 보기에서 특정 분류 선택 시 미리 채우기
+    const defaultValues = typeof activeTab === "string" ? { category: activeTab } : undefined
+
     if (type === "income") {
       return (
         <ItemFormDialog
           open={showAdd}
           onClose={closeAdd}
           mode="create"
+          defaultValues={defaultValues}
           categories={categories}
           onSubmit={handleAdd as (item: TransactionItem) => Promise<void>}
         />
@@ -371,6 +375,7 @@ export function ItemsTable({
         open={showAdd}
         onClose={closeAdd}
         mode="create"
+        defaultValues={defaultValues}
         categories={categories}
         onSubmit={handleAdd}
       />

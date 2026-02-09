@@ -13,7 +13,7 @@ import { useYearData } from "@/hooks/useYearData"
 import { collectCategoriesFromItems } from "@/lib/grouping"
 import { calculateBalance } from "@/lib/calculations"
 import { updateSortedItem, write } from "@/lib/database"
-import { getProjectItems, isProjectExpense } from "@/lib/utils"
+import { getCurrentMonth, getProjectItems, isProjectExpense } from "@/lib/utils"
 import { sourcePath, yearMemoPath } from "@/lib/paths"
 
 async function autoAdjustRecurringMonth(
@@ -81,22 +81,23 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
     [incomeItems, expenseItems, incomeRecurring, expenseRecurring],
   )
 
-  // 분류 목록 (전 연도 기반, 영역별)
+  // 분류 목록 (이번 달 포함 지난 12개월간 사용된 분류)
+  const currentMonth = getCurrentMonth()
   const incomeItemCategories = useMemo(
-    () => collectCategoriesFromItems(prevData.incomeItems, []),
-    [prevData.incomeItems],
+    () => collectCategoriesFromItems(incomeItems, prevData.incomeItems, currentMonth),
+    [incomeItems, prevData.incomeItems, currentMonth],
   )
   const incomeRecurringCategories = useMemo(
-    () => collectCategoriesFromItems([], prevData.incomeRecurring),
-    [prevData.incomeRecurring],
+    () => collectCategoriesFromItems(incomeRecurring, prevData.incomeRecurring, 12),
+    [incomeRecurring, prevData.incomeRecurring],
   )
   const expenseItemCategories = useMemo(
-    () => collectCategoriesFromItems(prevData.expenseItems, []),
-    [prevData.expenseItems],
+    () => collectCategoriesFromItems(expenseItems, prevData.expenseItems, currentMonth),
+    [expenseItems, prevData.expenseItems, currentMonth],
   )
   const expenseRecurringCategories = useMemo(
-    () => collectCategoriesFromItems([], prevData.expenseRecurring),
-    [prevData.expenseRecurring],
+    () => collectCategoriesFromItems(expenseRecurring, prevData.expenseRecurring, 12),
+    [expenseRecurring, prevData.expenseRecurring],
   )
 
   // 반복 수입 자동 조정: value + discrepancy

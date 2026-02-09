@@ -44,20 +44,25 @@ export const extractCategories = <T extends { category?: string }>(
   return hasUndefined ? [undefined, ...sorted] : sorted
 }
 
-// 특정 항목 목록에서 분류 수집 (빈도 높은 순).
-// 폼의 분류 자동완성 목록에 사용. 전 연도 데이터에서 추출한다.
+// 지난 12개월간 사용된 분류 수집 (빈도 높은 순).
+// 폼의 분류 자동완성 목록에 사용.
+// 올해 items 중 currentMonth 이하 + 작년 items 중 currentMonth 초과를 합산.
+// recurring 호출 시 currentMonth=12로 전달하면 양쪽 모두 포함.
 export const collectCategoriesFromItems = (
-  items: ReadonlyArray<{ category?: string }>,
-  recurring: ReadonlyArray<{ category?: string }>,
+  currentItems: ReadonlyArray<{ month?: number; category?: string }>,
+  prevItems: ReadonlyArray<{ month?: number; category?: string }>,
+  currentMonth: number,
 ): Array<string> => {
   const counts = new Map<string, number>()
-  for (const item of items) {
-    if (!item.category) continue
-    counts.set(item.category, (counts.get(item.category) ?? 0) + 1)
+  const count = (category: string | undefined) => {
+    if (!category) return
+    counts.set(category, (counts.get(category) ?? 0) + 1)
   }
-  for (const item of recurring) {
-    if (!item.category) continue
-    counts.set(item.category, (counts.get(item.category) ?? 0) + 1)
+  for (const item of currentItems) {
+    if (item.month === undefined || item.month <= currentMonth) count(item.category)
+  }
+  for (const item of prevItems) {
+    if (item.month === undefined || item.month > currentMonth) count(item.category)
   }
   return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([category]) => category)
 }
