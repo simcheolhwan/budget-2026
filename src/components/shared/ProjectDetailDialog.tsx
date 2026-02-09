@@ -75,6 +75,7 @@ export function ProjectDetailDialog({
               <thead>
                 <tr>
                   <th>항목</th>
+                  <th>메모</th>
                   <th>{formatNumber(total)}</th>
                 </tr>
               </thead>
@@ -82,6 +83,7 @@ export function ProjectDetailDialog({
                 {items.map((item, index) => (
                   <tr key={index} onClick={() => openEdit(index)} data-clickable>
                     <td>{item.name}</td>
+                    <td data-memo>{item.memo}</td>
                     <td>{formatNumber(item.amount)}</td>
                   </tr>
                 ))}

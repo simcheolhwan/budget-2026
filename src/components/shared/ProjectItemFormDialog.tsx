@@ -28,6 +28,7 @@ export function ProjectItemFormDialog({
     resolver: zodResolver(ProjectItemSchema),
     defaultValues: {
       name: "",
+      memo: "",
       amount: 0,
       ...defaultValues,
     },
@@ -37,6 +38,7 @@ export function ProjectItemFormDialog({
     if (open) {
       reset({
         name: "",
+        memo: "",
         amount: 0,
         ...defaultValues,
       })
@@ -44,7 +46,9 @@ export function ProjectItemFormDialog({
   }, [open, defaultValues, reset])
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    await onSubmit(data)
+    const trimmed = data.memo?.trim()
+    const { memo: _, ...rest } = data
+    await onSubmit(trimmed ? { ...rest, memo: trimmed } : rest)
     onClose()
   })
 
@@ -68,6 +72,19 @@ export function ProjectItemFormDialog({
                 className={formStyles.input}
                 {...register("name")}
                 placeholder="항목명…"
+              />
+            </div>
+
+            <div className={formStyles.field}>
+              <label htmlFor="project-item-memo" className={formStyles.label}>
+                메모
+              </label>
+              <input
+                id="project-item-memo"
+                type="text"
+                className={formStyles.input}
+                {...register("memo")}
+                placeholder="메모…"
               />
             </div>
 

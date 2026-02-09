@@ -55,6 +55,7 @@ export type Recurring = z.infer<typeof RecurringSchema>
 
 export const ProjectItemSchema = z.object({
   name: z.string().optional(),
+  memo: z.string().optional(),
   amount: AmountSchema,
 })
 export type ProjectItem = z.infer<typeof ProjectItemSchema>
