@@ -4,13 +4,15 @@ interface KeyboardShortcutHandlers {
   onSearch: () => void
   onNavigate: (to: string) => void
   onYearNavigate?: (direction: -1 | 1) => void
+  onAddExpense?: () => void
 }
 
-// 전역 키보드 단축키 (⌘K, Alt+1/2/3, Alt+←/→)
+// 전역 키보드 단축키 (⌘K, Alt+1/2/3, Alt+←/→, Alt+N)
 export function useKeyboardShortcuts({
   onSearch,
   onNavigate,
   onYearNavigate,
+  onAddExpense,
 }: KeyboardShortcutHandlers) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -32,6 +34,13 @@ export function useKeyboardShortcuts({
           return
         }
 
+        // Alt+N 지출 추가
+        if (e.code === "KeyN" && onAddExpense) {
+          e.preventDefault()
+          onAddExpense()
+          return
+        }
+
         // Alt+←/→ 연도 이동
         if (onYearNavigate) {
           if (e.code === "ArrowLeft") {
@@ -50,5 +59,5 @@ export function useKeyboardShortcuts({
 
     document.addEventListener("keydown", handler)
     return () => document.removeEventListener("keydown", handler)
-  }, [onSearch, onNavigate, onYearNavigate])
+  }, [onSearch, onNavigate, onYearNavigate, onAddExpense])
 }

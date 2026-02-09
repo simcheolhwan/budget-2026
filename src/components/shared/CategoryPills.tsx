@@ -17,6 +17,7 @@ export function CategoryPills({ value, onChange, categories }: CategoryPillsProp
         onChange={(e) => onChange(e.target.value)}
         placeholder="분류…"
         aria-label="분류"
+        autoFocus
       />
       {categories.length > 0 && (
         <div className={styles.pills}>

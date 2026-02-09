@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { IconQuestionMark } from "@tabler/icons-react"
 import { SortableWrapper } from "./SortableWrapper"
 import { ItemFormDialog } from "./ItemFormDialog"
@@ -91,6 +91,14 @@ export function ItemsTable({
     index: number
     project: ProjectExpense
   } | null>(null)
+
+  // Alt+N shortcut: listen for expense:add custom event
+  useEffect(() => {
+    if (type !== "expense") return
+    const handler = () => openAdd()
+    document.addEventListener("expense:add", handler)
+    return () => document.removeEventListener("expense:add", handler)
+  }, [type, openAdd])
 
   const filtered = useMemo(
     () => filterItems(items as Array<TransactionItem | ExpenseItem>, viewMode, activeTab),

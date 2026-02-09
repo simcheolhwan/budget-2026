@@ -46,10 +46,15 @@ export function AppLayout({ children }: AppLayoutProps) {
     [canNavigateYear, years, year, setYear],
   )
 
+  const handleAddExpense = useCallback(() => {
+    document.dispatchEvent(new CustomEvent("expense:add"))
+  }, [])
+
   useKeyboardShortcuts({
     onSearch: openSearch,
     onNavigate: handleNavigate,
     onYearNavigate: handleYearNavigate,
+    onAddExpense: handleAddExpense,
   })
 
   return (
