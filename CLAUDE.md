@@ -38,7 +38,7 @@
 - 정렬: 저장 시 month 오름차순, 같은 월 내 category 가나다순 자동 정렬 (`addSortedItem`/`updateSortedItem`)
 - DnD 순서 변경: dnd-kit (`useSortableList` → `reorderItems`)
 - 검색: `⌘K` 전체 검색 (`buildSearchIndex` → `searchItems`)
-- 키보드 단축키: `Alt+1/2/3` 라우트, `Alt+←/→` 연도 이동
+- 키보드 단축키: `Alt+1/2/3/P` 라우트, `Alt+←/→` 연도 이동, `Alt+N` 지출 추가, `?` 단축키 도움말
 - Union 타입 분기: `ExpenseItem = TransactionItem | ProjectExpense` → `isProjectExpense()`
 
 ## Gotchas
