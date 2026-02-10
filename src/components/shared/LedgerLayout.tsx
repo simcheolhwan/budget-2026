@@ -11,6 +11,7 @@ import { useAvailableYears } from "@/hooks/useAvailableYears"
 import { useSummary } from "@/hooks/useSummary"
 import { useYearData } from "@/hooks/useYearData"
 import { collectCategoriesFromItems } from "@/lib/grouping"
+import { useBudget } from "@/hooks/useBudget"
 import { calculateBalance } from "@/lib/calculations"
 import { updateSortedItem, write } from "@/lib/database"
 import { getCurrentMonth, getProjectItems, isProjectExpense } from "@/lib/utils"
@@ -69,6 +70,9 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
   // 전 연도 데이터 로드 (분류 수집용)
   const prevData = useYearData(source, year - 1)
 
+  // 예산 데이터 (가족 지출 카테고리용)
+  const { data: budget } = useBudget()
+
   // 경로 계산
   const incomePath = sourcePath(source, year, "incomes", "items")
   const expensePath = sourcePath(source, year, "expenses", "items")
@@ -91,10 +95,12 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
     () => collectCategoriesFromItems(incomeRecurring, prevData.incomeRecurring, 12),
     [incomeRecurring, prevData.incomeRecurring],
   )
-  const expenseItemCategories = useMemo(
-    () => collectCategoriesFromItems(expenseItems, prevData.expenseItems, currentMonth),
-    [expenseItems, prevData.expenseItems, currentMonth],
-  )
+  const expenseItemCategories = useMemo(() => {
+    if (source === "family" && budget?.annual) {
+      return budget.annual.flatMap((g) => g.items.map((item) => item.name))
+    }
+    return collectCategoriesFromItems(expenseItems, prevData.expenseItems, currentMonth)
+  }, [source, budget, expenseItems, prevData.expenseItems, currentMonth])
   const expenseRecurringCategories = useMemo(
     () => collectCategoriesFromItems(expenseRecurring, prevData.expenseRecurring, 12),
     [expenseRecurring, prevData.expenseRecurring],
@@ -225,6 +231,7 @@ export function LedgerLayout({ source }: LedgerLayoutProps) {
             path={expensePath}
             type="expense"
             categories={expenseItemCategories}
+            categoryReadOnly={source === "family"}
             activeTab={expenseSubTabs.activeTab}
             discrepancy={discrepancy}
             onAutoAdjust={handleAutoAdjustExpenseItem}

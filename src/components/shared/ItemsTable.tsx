@@ -25,6 +25,7 @@ interface ItemsTableProps {
   path: string
   type: "income" | "expense"
   categories: Array<string>
+  categoryReadOnly?: boolean
   activeTab: number | string | undefined | null
   discrepancy: number
   onAutoAdjust?: (originalIndex: number) => Promise<void>
@@ -69,6 +70,7 @@ export function ItemsTable({
   path,
   type,
   categories,
+  categoryReadOnly,
   activeTab,
   discrepancy,
   onAutoAdjust,
@@ -261,6 +263,7 @@ export function ItemsTable({
           mode="edit"
           defaultValues={editIndex !== null ? items[editIndex] : undefined}
           categories={categories}
+          categoryReadOnly={categoryReadOnly}
           onSubmit={handleEdit}
           onDelete={() => {
             if (editIndex !== null) requestDelete(editIndex)
@@ -377,6 +380,7 @@ export function ItemsTable({
         mode="create"
         defaultValues={defaultValues}
         categories={categories}
+        categoryReadOnly={categoryReadOnly}
         onSubmit={handleAdd}
       />
     )

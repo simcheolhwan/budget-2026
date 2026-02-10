@@ -4,10 +4,11 @@ interface CategoryPillsProps {
   value: string
   onChange: (value: string) => void
   categories: Array<string>
+  readOnly?: boolean
 }
 
 // 분류 선택 (자유 입력 + pill 목록)
-export function CategoryPills({ value, onChange, categories }: CategoryPillsProps) {
+export function CategoryPills({ value, onChange, categories, readOnly }: CategoryPillsProps) {
   return (
     <div className={styles.wrapper}>
       <input
@@ -17,7 +18,8 @@ export function CategoryPills({ value, onChange, categories }: CategoryPillsProp
         onChange={(e) => onChange(e.target.value)}
         placeholder="분류…"
         aria-label="분류"
-        autoFocus
+        autoFocus={!readOnly}
+        readOnly={readOnly}
       />
       {categories.length > 0 && (
         <div className={styles.pills}>

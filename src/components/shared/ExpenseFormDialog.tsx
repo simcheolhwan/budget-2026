@@ -23,6 +23,7 @@ interface ExpenseFormDialogProps {
   mode: "create" | "edit"
   defaultValues?: Partial<ExpenseItem>
   categories: Array<string>
+  categoryReadOnly?: boolean
   onSubmit: (item: ExpenseItem) => Promise<void>
   onDelete?: () => void
 }
@@ -34,6 +35,7 @@ export function ExpenseFormDialog({
   mode,
   defaultValues,
   categories,
+  categoryReadOnly,
   onSubmit,
   onDelete,
 }: ExpenseFormDialogProps) {
@@ -129,6 +131,7 @@ export function ExpenseFormDialog({
                     value={field.value ?? ""}
                     onChange={field.onChange}
                     categories={categories}
+                    readOnly={categoryReadOnly}
                   />
                 )}
               />
